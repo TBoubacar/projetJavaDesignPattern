@@ -1,0 +1,9 @@
+package projetDesignPattern;
+
+public abstract class Game {
+
+	private Integer turn;
+	public Game () {
+		this.turn = 0;
+	}
+}

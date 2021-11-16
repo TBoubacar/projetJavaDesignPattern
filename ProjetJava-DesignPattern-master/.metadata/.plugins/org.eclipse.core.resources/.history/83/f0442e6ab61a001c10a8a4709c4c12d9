@@ -1,0 +1,33 @@
+package projetDesignPattern;
+
+public abstract class Game {
+
+	private static int turn;
+	private int maxturn;
+	
+	/*---	CONSTRUCTEUR	---*/
+	public Game (int tourMax) {
+		Game.setTurn(0);
+		this.maxturn = tourMax;
+	}
+
+	/*---	METHODES	---*/
+	
+	
+	/*---	SETTER AND GETTER	---*/
+	public static int getTurn() {
+		return turn;
+	}
+
+	public static void setTurn(int turn) {
+		Game.turn = turn;
+	}
+
+	public int getMaxturn() {
+		return maxturn;
+	}
+
+	public void setMaxturn(int maxturn) {
+		this.maxturn = maxturn;
+	}
+}

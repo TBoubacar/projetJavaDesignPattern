@@ -1,0 +1,5 @@
+package projetDesignPattern;
+
+public class ViewCommand {
+
+}

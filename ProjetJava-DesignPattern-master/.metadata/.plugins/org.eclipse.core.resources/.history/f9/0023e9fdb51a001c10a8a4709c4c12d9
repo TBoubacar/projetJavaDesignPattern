@@ -1,0 +1,10 @@
+package projetDesignPattern;
+
+public abstract class Game {
+
+	private static int turn;
+	
+	public Game () {
+		Game.turn = 0;
+	}
+}

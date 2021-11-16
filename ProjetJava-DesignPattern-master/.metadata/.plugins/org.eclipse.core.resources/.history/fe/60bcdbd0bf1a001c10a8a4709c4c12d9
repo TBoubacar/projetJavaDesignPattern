@@ -1,0 +1,11 @@
+package projetDesignPattern;
+
+import javax.swing.JFrame;
+
+public class ViewSimpleGame {
+
+	Private JFrame jFrame;
+	public ViewSimpleGame() {
+		
+	}
+}

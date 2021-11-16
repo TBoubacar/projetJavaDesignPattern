@@ -1,0 +1,12 @@
+package projetDesignPattern;
+
+import javax.swing.JFrame;
+
+public class ViewCommand {
+	
+	JFrame jFrame;
+	
+	public ViewCommand() {
+		jFrame = new JFrame();
+	}
+}

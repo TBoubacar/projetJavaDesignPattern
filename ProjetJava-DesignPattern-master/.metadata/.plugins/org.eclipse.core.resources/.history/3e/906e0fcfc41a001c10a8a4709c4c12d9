@@ -1,0 +1,18 @@
+package projetDesignPattern;
+
+public class Test {
+
+	public static void main(String[] args) {
+
+		SimpleGame simpleGame = new SimpleGame(5);
+		ViewSimpleGame viewSimpleGame = new ViewSimpleGame();
+		ViewCommand viewCommand = new ViewCommand();
+
+		viewSimpleGame.show(simpleGame);
+		viewCommand.show();
+		simpleGame.init();
+		simpleGame.run();
+		viewSimpleGame.close();
+	}
+
+}

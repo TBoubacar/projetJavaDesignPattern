@@ -1,0 +1,8 @@
+package projetDesignPattern;
+
+public class ViewCommand {
+	
+	public ViewCommand() {
+		// TODO Auto-generated constructor stub
+	}
+}

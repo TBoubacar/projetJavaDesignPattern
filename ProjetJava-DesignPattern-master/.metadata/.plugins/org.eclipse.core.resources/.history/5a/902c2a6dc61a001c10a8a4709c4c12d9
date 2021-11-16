@@ -1,0 +1,32 @@
+package projetDesignPattern;
+
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+
+import javax.swing.JFrame;
+
+public class ViewCommand {
+	
+	JFrame jFrame;
+	
+	public ViewCommand() {
+		jFrame = new JFrame();
+		jFrame.setTitle("Commande");
+		jFrame.setSize(new Dimension(700, 200));
+		Dimension windowSize = jFrame.getSize();
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Point centerPoint = ge.getCenterPoint();
+		int dx = centerPoint.x - windowSize.width / 2 + 350 ;
+		int dy = centerPoint.y - windowSize.height / 2 - 350;
+		jFrame.setLocation(dx,dy);
+	}
+	
+	public void show() {
+		jFrame.setVisible(true);
+	}
+
+	public void close() {
+		jFrame.setVisible(false);
+	}
+}

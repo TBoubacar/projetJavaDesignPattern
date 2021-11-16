@@ -1,0 +1,62 @@
+package projetDesignPattern;
+
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
+import java.awt.Point;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+
+public class ViewCommand {
+	
+	JFrame jFrame;
+	JSlider jSlider;
+	JButton jButtonRestart;
+	JButton jButtonStart;
+	JButton jButtonPlay;
+	JButton jButtonPause;
+	
+	public ViewCommand() {
+		jFrame = new JFrame();
+		jFrame.setTitle("Commande");
+		jFrame.setSize(new Dimension(700, 200));
+		Dimension windowSize = jFrame.getSize();
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Point centerPoint = ge.getCenterPoint();
+		int dx = centerPoint.x - windowSize.width / 2 + 350 ;
+		int dy = centerPoint.y - windowSize.height / 2 - 350;
+		jFrame.setLocation(dx,dy);
+		
+		Icon restartIcon= new ImageIcon("icons/icon_restart.png");
+		Icon startIcon= new ImageIcon("icons/icon_restart.png");
+		Icon playIcon= new ImageIcon("icons/icon_restart.png");
+		Icon pauseIcon= new ImageIcon("icons/icon_restart.png");
+		
+		jSlider = new JSlider();
+		jButtonRestart = new JButton();
+		jButtonStart= new JButton();
+		jButtonPlay = new JButton();
+		jButtonPause = new JButton();
+		
+		JPanel jPanelBouton = new JPanel();
+		jPanelBouton.add(jButtonRestart);
+		jPanelBouton.add(jButtonStart);
+		jPanelBouton.add(jButtonPlay);
+		jPanelBouton.add(jButtonPause);
+		
+		
+	}
+	
+	public void show() {
+		jFrame.setVisible(true);
+	}
+
+	public void close() {
+		jFrame.setVisible(false);
+	}
+}

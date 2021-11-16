@@ -1,0 +1,60 @@
+package projetDesignPattern;
+
+public abstract class Game {
+
+	private static int turn;
+	private int maxturn;
+	private boolean isRunning;
+	
+	/*---	CONSTRUCTEUR	---*/
+	public Game (int tourMax) {
+		Game.setTurn(0);
+		this.maxturn = tourMax;
+		this.isRunning = false;
+	}
+
+	/*---	METHODES CONCRETE	---*/
+	public void init(){
+		Game.turn = 0;
+		this.isRunning = true;
+		this.initializeGame();
+	}
+		
+	public void step() {
+		if (Game.getTurn() < this.maxturn && ) {
+			Game.setTurn(Game.getTurn()+1);
+			this.takeTurn();
+			
+		}
+	}
+
+	/*---	METHODES ABSTRAITE	---*/
+	public abstract void initializeGame();
+	public abstract void takeTurn();
+	public abstract boolean gameContinue();
+
+	/*---	SETTER AND GETTER	---*/
+	public static int getTurn() {
+		return turn;
+	}
+
+	public static void setTurn(int turn) {
+		Game.turn = turn;
+	}
+
+	public int getMaxturn() {
+		return maxturn;
+	}
+
+	public void setMaxturn(int maxturn) {
+		this.maxturn = maxturn;
+	}
+
+	public boolean isRunning() {
+		return isRunning;
+	}
+
+	public void setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
+	}
+}

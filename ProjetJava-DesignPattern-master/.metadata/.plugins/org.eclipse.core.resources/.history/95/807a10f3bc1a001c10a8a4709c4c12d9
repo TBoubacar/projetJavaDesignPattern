@@ -1,0 +1,87 @@
+package projetDesignPattern;
+
+public abstract class Game implements Runnable {
+
+	private static int turn;
+	private int maxturn;
+	private boolean isRunning;
+	private Thread thread;
+	
+	/*---	CONSTRUCTEUR	---*/
+	public Game (int tourMax) {
+		Game.setTurn(0);
+		this.maxturn = tourMax;
+		this.isRunning = false;
+	}
+
+	/*---	METHODES CONCRETE	---*/
+	public void init(){
+		Game.turn = 0;
+		this.isRunning = true;
+		this.initializeGame();
+	}
+		
+	public void step() {
+		if (Game.getTurn() < this.maxturn && this.gameContinue()) {
+			Game.setTurn(Game.getTurn()+1);
+			this.takeTurn();			
+		} else {
+			this.isRunning = false;
+			this.gameOver();
+		}
+	}
+
+	public void run() {
+		while (this.isRunning) {
+			this.step();	
+		}
+	}
+	
+	public void pause() {
+		this.isRunning = false;
+	}
+	
+	public void launch() {
+		this.isRunning = true;
+		this.thread = new Thread(this);
+	}
+	
+	/*---	METHODES ABSTRAITE	---*/
+	public abstract void initializeGame();
+	public abstract void takeTurn();
+	public abstract boolean gameContinue();
+	public abstract void gameOver();
+
+	/*---	SETTER AND GETTER	---*/
+	public static int getTurn() {
+		return turn;
+	}
+
+	public static void setTurn(int turn) {
+		Game.turn = turn;
+	}
+
+	public int getMaxturn() {
+		return maxturn;
+	}
+
+	public void setMaxturn(int maxturn) {
+		this.maxturn = maxturn;
+	}
+
+	public boolean isRunning() {
+		return isRunning;
+	}
+
+	public void setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
+	}
+
+	public Thread getThread() {
+		return thread;
+	}
+
+	public void setThread(Thread thread) {
+		this.thread = thread;
+	}
+}

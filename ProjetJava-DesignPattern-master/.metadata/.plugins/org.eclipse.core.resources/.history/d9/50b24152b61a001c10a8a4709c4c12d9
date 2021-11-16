@@ -1,0 +1,23 @@
+package projetDesignPattern;
+
+public abstract class Game {
+
+	private static int turn;
+	
+	/*---	CONSTRUCTEUR	---*/
+	public Game () {
+		Game.setTurn(0);
+	}
+
+	/*---	METHODES	---*/
+	
+	
+	/*---	SETTER AND GETTER	---*/
+	public static int getTurn() {
+		return turn;
+	}
+
+	public static void setTurn(int turn) {
+		Game.turn = turn;
+	}
+}
