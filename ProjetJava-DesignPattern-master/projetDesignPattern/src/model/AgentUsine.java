@@ -1,22 +1,35 @@
 package model;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 import utils.ColorAgent;
 
 public class AgentUsine {
+	//	ON UTILISE LE PRINCIPE DU DESIGN PATTERN SINGLETON ICI POUR S'ASSURER QU'IL N'EXISTE QU'UNE SEULE USINE DE CREATION D'AGENTS DANS NOTRE JEU
+	private static AgentUsine uniqueInstance;
 	private Hashtable<Character, AgentFactory> factories;
-	private char type;
-	private ColorAgent color;	// SEUL LES AGENTS BOMBERMAN SERONT EN COULEUR MALGRÉ TOUT
 	
-	public AgentUsine(char type, ColorAgent color) {
+	/*---		CONSTRUCTEUR EN PRIVATE POUR LA GESTION DU DESIGN PATTERN SINGLETON		---*/
+	private AgentUsine() {
 		this.factories = new Hashtable<Character, AgentFactory>();
-		this.setColor(color);
-		this.setType(type);
+	}
+	
+	/*---	CONSTRUCTEUR EN PUBLIC POUR LA CREATION D'UNE UNIQUE INSTANCE DE LA CLASSE	---*/
+	public static synchronized AgentUsine getInstance() {
+		if (uniqueInstance == null) {
+			uniqueInstance = new AgentUsine();
+		}
+		return uniqueInstance;
+	}
+	
+	public Agent createAgent(char type, ColorAgent color, int x, int y) {
+		// IL N'Y A PAS D'INQUIÉTUDE À CE FAIRE POUR LES DOUBLONS, CAR UN HASTABLE PERMET DE 
+		// REPÉRER LES DOUBLONS ET DONC NE L'INSERT PAS EN TANT QUE NOUVELLE DONNÉE.
 		
 		switch (type) {
-		case 'B':
-			this.factories.put(type, new AgentBombermanFactory(this.color));
+		case 'B':	// SEUL LES AGENTS BOMBERMAN SERONT EN COULEUR MALGRÉ TOUT
+			this.factories.put(type, new AgentBombermanFactory(color));
 			break;
 		case 'R':
 			this.factories.put(type, new AgentRajionFactory());
@@ -27,28 +40,16 @@ public class AgentUsine {
 		default:
 			this.factories.put(type, new AgentEnnemiFactory());
 			break;
-		}	
-	}
-	
-	public Agent createAgent(int x, int y) {
-		return this.factories.get(this.type).createAgent(x, y);
+		}
+		return this.factories.get(type).createAgent(x, y);
 	}
 
 	/*---		GETTERS AND SETTERS		---*/
-	public char getType() {
-		return type;
+	public Hashtable<Character, AgentFactory> getFactories() {
+		return factories;
 	}
 
-	public void setType(char type) {
-		this.type = type;
+	public void setFactories(Hashtable<Character, AgentFactory> factories) {
+		this.factories = factories;
 	}
-
-	public ColorAgent getColor() {
-		return color;
-	}
-
-	public void setColor(ColorAgent color) {
-		this.color = color;
-	}
-
 }

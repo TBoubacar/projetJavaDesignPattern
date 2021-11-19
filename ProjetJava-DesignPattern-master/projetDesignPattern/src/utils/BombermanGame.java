@@ -7,26 +7,43 @@ import model.AgentUsine;
 import model.InputMap;
 
 public class BombermanGame extends Game {
-	private ArrayList<Agent> agents;
-	
+	private AgentUsine usineOfAgent;	// CECI CORRESPOND À UNE USINE D'AGENTS PERMETTANT DE CRÉER DIFFÉRENT TYPE D'AGENT (ON NE POSSÈDE QUE 4 TYPES POUR LE MOMENT)
+	private ArrayList<Agent> agents;	// CECI CORRESPOND À L'ENSEMBLE DES AGENTS CRÉÉS DANS NOTRE USINE
+
 	public BombermanGame(int tourMax, String filename) {
 		super(tourMax);
+		this.usineOfAgent = AgentUsine.getInstance();
+		
 		try {
 			this.setInputMap(new InputMap(filename));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}	
+
+	public boolean deplacement(Agent agent) {
+		if(!this.getInputMap().get_walls()[agent.getX()+1][agent.getY()+1]) {
+			agent.setX(agent.getX()+1);
+			agent.setY(agent.getY()+1);
+			return true;
+		} else return false;
+	}
+	
+	//	-----------CODE A IMPLEMENTER----------SEANCE 3.4
+	public boolean isLegalMove(Agent agent, AgentAction agentAction) {
+		if(this.getInputMap().get_walls()[agent.getY()][agent.getY()])
+			return true;
+		return false;
 	}
 
 	@Override
 	public void initializeGame() {
 		this.agents = new ArrayList<Agent>();
 		for(InfoAgent agent : this.getInputMap().getStart_agents()) {
-			AgentUsine agentUsine = new AgentUsine(agent.getType(), agent.getColor());
-			this.agents.add(agentUsine.createAgent(agent.getX(), agent.getY()));
+			this.agents.add(this.usineOfAgent.createAgent(agent.getType(), agent.getColor(), agent.getX(), agent.getY()));
 		}
-		
+//		System.out.println(this.usineOfAgent);		// VOUS POUVEZ DECOMMENTER CE CODE POUR VOUS ASSURER QUE LA CLASSE HASHTABLE GERE BIEN LE CAS DES DOUBLONS ET EVITE DE LES INSERER
 	}
 
 	@Override
@@ -56,4 +73,7 @@ public class BombermanGame extends Game {
 		this.agents = agents;
 	}
 
+	public AgentUsine getUsineOfAgent() {
+		return usineOfAgent;
+	}
 }

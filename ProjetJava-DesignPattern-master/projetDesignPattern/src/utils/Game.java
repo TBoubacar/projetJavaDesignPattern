@@ -39,8 +39,8 @@ public abstract class Game implements Runnable, Observable {
 			o.update(this.turn);
 		}
 	}
-	/*---	METHODES CONCRETE	---*/
 	
+	/*---	METHODES CONCRETE	---*/	
 	public void changeGameSpace(String filename) {
 		try {
 			this.inputMap = new InputMap(filename);
