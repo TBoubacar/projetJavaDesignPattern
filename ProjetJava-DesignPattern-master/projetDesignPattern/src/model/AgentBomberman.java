@@ -21,7 +21,7 @@ public class AgentBomberman extends Agent{
 
 	@Override
 	public void executeAction() {
-		System.out.println("Je suis un Bomberman !");		
+		this.move(this.chooseStrategie());
 	}
 
 }

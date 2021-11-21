@@ -6,14 +6,16 @@ import java.awt.Point;
 import javax.swing.JFrame;
 
 import Controller.AbstractController;
+import Controller.ControllerBombermanGame;
 import utils.Observer;
 
 public class ViewBombermanGame implements Observer {
 
 	JFrame jFrame;
-	AbstractController controller;
+	private PanelBomberman panelBomberman;
+	ControllerBombermanGame controller;
 	
-	public ViewBombermanGame(AbstractController controllerGame) {
+	public ViewBombermanGame(ControllerBombermanGame controllerGame) {
 		this.controller = controllerGame;
 
 		/*---		JFRAME		---*/
@@ -26,10 +28,19 @@ public class ViewBombermanGame implements Observer {
 		int dx = centerPoint.x - windowSize.width / 2 - 500;
 		int dy = centerPoint.y - windowSize.height / 2 - 100;
 		jFrame.setLocation(dx,dy);
+
+		this.panelBomberman = new PanelBomberman(this.getController().getGame().getInputMap().getSizeX(), this.getController().getGame().getInputMap().getSizeY(), this.getController().getGame().getInputMap().get_walls(), this.controller.getBombermanGame().getInfoMurs(), this.controller.getBombermanGame().getInfoAgents());
+		this.addPanel(panelBomberman);
 	}
 
+	@Override
+	public void update(int nombreTour) {
+//		this.panelBomberman.updateInfoGame(this.controller.getBombermanGame().getInputMap().getStart_breakable_walls(), this.controller.getBombermanGame().getInfoAgents(), null, this.controller.getBombermanGame().getBombes());
+//		this.panelBomberman.repaint();
+	}
+	
 	public void addPanel(PanelBomberman panelBomberman) {
-		this.jFrame.add(panelBomberman);		
+		this.jFrame.add(panelBomberman);
 	}
 
 	public void show() {
@@ -52,13 +63,15 @@ public class ViewBombermanGame implements Observer {
 		return controller;
 	}
 
-	public void setController(AbstractController controller) {
+	public void setController(ControllerBombermanGame controller) {
 		this.controller = controller;
 	}
 
-	@Override
-	public void update(int nombreTour) {
-		// TODO Auto-generated method stub
-		
+	public PanelBomberman getPanelBomberman() {
+		return panelBomberman;
+	}
+
+	public void setPanelBomberman(PanelBomberman panelBomberman) {
+		this.panelBomberman = panelBomberman;
 	}
 }

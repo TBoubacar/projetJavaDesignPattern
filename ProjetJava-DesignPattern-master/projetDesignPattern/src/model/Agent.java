@@ -5,37 +5,36 @@ import utils.AgentAction;
 public abstract class Agent {
 	private int x;
 	private int y;
+	private boolean canFly;
+	private MoveStrategie moveStrategie;
 	
 	/*---	CONSTRUCTEUR	---*/
 	public Agent(int x, int y) {
+		this.moveStrategie = new AleatoireStrategie();
 		this.setX(x);
 		this.setY(y);
+		this.canFly = false;
 	}
 	
-	//	-----------CODE A IMPLEMENTER----------SEANCE 3.4
-	public void deplaceTo(AgentAction action) {
-		//	CODE A IMPLEMENTER
+	/*-----------	METHODES	----------*/
+	public void move(AgentAction action) {
 		switch (action) {
-		case MOVE_UP:
-
-			break;
 		case MOVE_DOWN:
-
-			break;
+			this.setY(this.getY() + 1);
+		case MOVE_UP:
+			this.setY(this.getY() - 1);
 		case MOVE_LEFT:
-
-			break;
+			this.setX(this.getX() - 1);
 		case MOVE_RIGHT:
-
-			break;
-		case PUT_BOMB:
-
-			break;
-		default:
-			break;
+			this.setX(this.getX() + 1);
+		default:	//LE CAS OU ON EST STOPÉ
 		}
 	}
-	//	-----------CODE A IMPLEMENTER----------SEANCE 3.4
+
+	public AgentAction chooseStrategie() {
+		return this.moveStrategie.deplace();
+	}
+	
 	public abstract void executeAction();
 
 	/*---	GETTER AND SETTER	---*/
@@ -55,4 +54,19 @@ public abstract class Agent {
 		this.y = y;
 	}
 
+	public MoveStrategie getMoveStrategie() {
+		return moveStrategie;
+	}
+
+	public void setMoveStrategie(MoveStrategie moveStrategie) {
+		this.moveStrategie = moveStrategie;
+	}
+
+	public boolean isCanFly() {
+		return canFly;
+	}
+
+	public void setCanFly(boolean canFly) {
+		this.canFly = canFly;
+	}
 }

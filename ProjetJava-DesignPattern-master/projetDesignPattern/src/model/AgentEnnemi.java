@@ -8,7 +8,7 @@ public class AgentEnnemi extends Agent{
 
 	@Override
 	public void executeAction() {
-		System.out.println("Je suis un Ennemi");		
+		this.move(this.chooseStrategie());
 	}
 
 }

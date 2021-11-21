@@ -463,7 +463,7 @@ public class PanelBomberman extends JPanel{
 	}
 
 
-	public void updateInfoGame(boolean[][] breakable_walls, ArrayList<InfoAgent> listInfoAgents ,ArrayList<InfoItem> listInfoItems, ArrayList<InfoBomb> listInfoBombs) {
+	public void updateInfoGame(boolean[][] breakable_walls, ArrayList<InfoAgent> listInfoAgents, ArrayList<InfoItem> listInfoItems, ArrayList<InfoBomb> listInfoBombs) {
 		
 		this.listInfoAgents = listInfoAgents;
 		this.listInfoItems = listInfoItems;

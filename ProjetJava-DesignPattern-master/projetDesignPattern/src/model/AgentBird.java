@@ -5,11 +5,12 @@ public class AgentBird extends Agent{
 	/*---	CONSTRUCTEUR	---*/
 	public AgentBird(int x, int y) {
 		super(x, y);
+		this.setCanFly(true);
 	}
 
 	@Override
 	public void executeAction() {
-		System.out.println("Je suis un Bird !");		
+		this.move(this.chooseStrategie());
 	}
 
 }

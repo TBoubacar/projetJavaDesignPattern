@@ -1,27 +1,22 @@
 package Controller;
 
-import utils.Game;
-import view.PanelBomberman;
+import utils.BombermanGame;
 import view.ViewBombermanGame;
 import view.ViewCommand;
 
 public class ControllerBombermanGame extends AbstractController{
-
+	private BombermanGame bombermanGame;
 	private ViewBombermanGame viewBombermanGame;
 	private ViewCommand viewCommand;
-	private PanelBomberman panelBomberman;
 	
-	public ControllerBombermanGame(Game game) {
+	public ControllerBombermanGame(BombermanGame game) {
 		super.setGame(game);
+		this.setBombermanGame(game);
 		this.viewBombermanGame = new ViewBombermanGame(this);
 		this.viewCommand = new ViewCommand(this);
 		
 		super.getGame().addObserver(viewBombermanGame);
 		super.getGame().addObserver(viewCommand);
-		
-		this.panelBomberman = new PanelBomberman(this.getGame().getInputMap().getSizeX(), this.getGame().getInputMap().getSizeY(), this.getGame().getInputMap().get_walls(), this.getGame().getInputMap().getStart_breakable_walls(), this.getGame().getInputMap().getStart_agents());
-		this.viewBombermanGame.addPanel(panelBomberman);
-
 	}
 
 	public void showGame() {
@@ -42,19 +37,19 @@ public class ControllerBombermanGame extends AbstractController{
 		this.viewBombermanGame = viewBombermanGame;
 	}
 
-	public PanelBomberman getPanelBomberman() {
-		return panelBomberman;
-	}
-
-	public void setPanelBomberman(PanelBomberman panelBomberman) {
-		this.panelBomberman = panelBomberman;
-	}
-
 	public ViewCommand getViewCommand() {
 		return viewCommand;
 	}
 
 	public void setViewCommand(ViewCommand viewCommand) {
 		this.viewCommand = viewCommand;
+	}
+
+	public BombermanGame getBombermanGame() {
+		return bombermanGame;
+	}
+
+	public void setBombermanGame(BombermanGame bombermanGame) {
+		this.bombermanGame = bombermanGame;
 	}
 }

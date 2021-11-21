@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
-
 import utils.ColorAgent;
 
 public class AgentUsine {
@@ -45,7 +43,6 @@ public class AgentUsine {
 		// IL N'Y A PAS D'INQUIÉTUDE À CE FAIRE POUR LES DOUBLONS, CAR UN HASTABLE PERMET DE 
 		// REPÉRER LES DOUBLONS ET DONC NE L'INSERT PAS EN TANT QUE NOUVELLE DONNÉE.
 		if(!this.getTypes().contains(type)) {
-			System.out.println("un type inexistant créé !");
 			switch (type) {
 			case 'B':	// SEUL LES AGENTS BOMBERMAN SERONT EN COULEUR MALGRÉ TOUT
 				this.factories.put(type, new AgentBombermanFactory(color));

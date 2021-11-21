@@ -9,7 +9,6 @@ public class AgentRajion extends Agent{
 
 	@Override
 	public void executeAction() {
-		System.out.println("Je suis un Rajion");		
+		this.move(this.chooseStrategie());
 	}
-
 }
