@@ -17,6 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 
 import Controller.AbstractController;
+import model.EtatBase;
+import model.EtatButtonCommande;
+import model.EtatFin;
 import utils.Observer;
 
 public class ViewCommand implements Observer {	
@@ -29,6 +32,7 @@ public class ViewCommand implements Observer {
 	JLabel jLabelSlider;
 	JLabel jLabel;
 	AbstractController controller;
+	private EtatButtonCommande etat;
 	
 	public ViewCommand(AbstractController controllerGame) {
 		this.controller = controllerGame;
@@ -57,49 +61,29 @@ public class ViewCommand implements Observer {
 		jButtonPlay = new JButton(playIcon);
 		jButtonPause = new JButton(pauseIcon);
 				//DE BASE TOUS LES BOUTONS SONT DESACTIVÉS SAUF LE BOUTON QUI LANCE LA PERMET DE LANCER LA PARTIE
-		jButtonRestart.setEnabled(false);
-		jButtonStart.setEnabled(true);
-		jButtonPlay.setEnabled(true);
-		jButtonPause.setEnabled(false);
+		this.etat = new EtatBase(this);
 		
 		jButtonRestart.addActionListener(new ActionListener() {	//BUTTON REDEMARRER
 			public void actionPerformed(ActionEvent evenement) {
-				System.out.println("Rédemarrage du jeu...");
-				jButtonRestart.setEnabled(false);
-				jButtonPause.setEnabled(false);
-				jButtonStart.setEnabled(true);
-				jButtonPlay.setEnabled(true);
-				controller.restart();
+				etat.restart();
 			}
 		});
 		
 		jButtonStart.addActionListener(new ActionListener() {	//BUTTON RUN (JOUER AUTOMATIQUEMENT)
 			public void actionPerformed(ActionEvent evenement) {
-				jButtonRestart.setEnabled(true);
-				jButtonPause.setEnabled(true);
-				jButtonStart.setEnabled(false);
-				jButtonPlay.setEnabled(false);
-				controller.play();
+				etat.start();
 			}
 		});
 		
 		jButtonPlay.addActionListener(new ActionListener() {	//BUTTON STEP (UNE SEULE OCCURENCE DE PAS) 
 			public void actionPerformed(ActionEvent evenement) {
-				jButtonRestart.setEnabled(true);
-				jButtonPause.setEnabled(false);
-				jButtonStart.setEnabled(true);
-				jButtonPlay.setEnabled(true);
-				controller.step();
+				etat.play();
 			}
 		});
 
 		jButtonPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evenement) {
-				jButtonRestart.setEnabled(true);
-				jButtonPause.setEnabled(false);
-				jButtonStart.setEnabled(true);
-				jButtonPlay.setEnabled(true);
-				controller.pause();
+				etat.pause();
 			}
 		});
 		
@@ -177,9 +161,79 @@ public class ViewCommand implements Observer {
 		
 		// GESTION DE LA FIN DU JEU
 		if(this.controller.getGame().getTurn() == this.controller.getGame().getMaxturn()) {
-			jButtonStart.setEnabled(false);
-			jButtonPlay.setEnabled(false);
-			jButtonPause.setEnabled(false);
+			this.setEtat(new EtatFin(this));
 		}
+	}
+	
+	public JFrame getjFrame() {
+		return jFrame;
+	}
+
+	public void setjFrame(JFrame jFrame) {
+		this.jFrame = jFrame;
+	}
+
+	public JSlider getjSlider() {
+		return jSlider;
+	}
+
+	public void setjSlider(JSlider jSlider) {
+		this.jSlider = jSlider;
+	}
+
+	public JButton getjButtonRestart() {
+		return jButtonRestart;
+	}
+
+	public void setjButtonRestart(JButton jButtonRestart) {
+		this.jButtonRestart = jButtonRestart;
+	}
+
+	public JButton getjButtonStart() {
+		return jButtonStart;
+	}
+
+	public void setjButtonStart(JButton jButtonStart) {
+		this.jButtonStart = jButtonStart;
+	}
+
+	public JButton getjButtonPlay() {
+		return jButtonPlay;
+	}
+
+	public void setjButtonPlay(JButton jButtonPlay) {
+		this.jButtonPlay = jButtonPlay;
+	}
+
+	public JButton getjButtonPause() {
+		return jButtonPause;
+	}
+
+	public void setjButtonPause(JButton jButtonPause) {
+		this.jButtonPause = jButtonPause;
+	}
+
+	public JLabel getjLabelSlider() {
+		return jLabelSlider;
+	}
+
+	public void setjLabelSlider(JLabel jLabelSlider) {
+		this.jLabelSlider = jLabelSlider;
+	}
+
+	public JLabel getjLabel() {
+		return jLabel;
+	}
+
+	public void setjLabel(JLabel jLabel) {
+		this.jLabel = jLabel;
+	}
+
+	public EtatButtonCommande getEtat() {
+		return etat;
+	}
+
+	public void setEtat(EtatButtonCommande etat) {
+		this.etat = etat;
 	}
 }
