@@ -19,8 +19,7 @@ import javax.swing.JSlider;
 import Controller.AbstractController;
 import utils.Observer;
 
-public class ViewCommand implements Observer {
-	
+public class ViewCommand implements Observer {	
 	JFrame jFrame;
 	JSlider jSlider;
 	JButton jButtonRestart;		//MON BOUTON REDEMARRER

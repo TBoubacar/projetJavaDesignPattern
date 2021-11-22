@@ -11,7 +11,7 @@ public class Test {
 		controllerSimpleGame.showGame();
 		*/
 		
-		BombermanGame bombermanGame = new BombermanGame(10, "layouts/niveau2.lay");
+		BombermanGame bombermanGame = new BombermanGame(100, "layouts/niveau2.lay");
 		ControllerBombermanGame controllerBombermanGame = new ControllerBombermanGame(bombermanGame);
 		controllerBombermanGame.showGame();
 	}

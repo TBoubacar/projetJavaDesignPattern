@@ -1,5 +1,7 @@
 package model;
 
+import utils.ColorAgent;
+
 public class AgentRajion extends Agent{
 
 	public AgentRajion(int x, int y) {
@@ -8,7 +10,12 @@ public class AgentRajion extends Agent{
 	}
 
 	@Override
-	public void executeAction() {
-		this.move(this.chooseStrategie());
+	public char getType() {
+		return 'R';
+	}
+	
+	@Override
+	public ColorAgent getColor() {
+		return null;
 	}
 }

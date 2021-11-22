@@ -1,5 +1,7 @@
 package model;
 
+import utils.ColorAgent;
+
 public class AgentBird extends Agent{
 	
 	/*---	CONSTRUCTEUR	---*/
@@ -9,8 +11,12 @@ public class AgentBird extends Agent{
 	}
 
 	@Override
-	public void executeAction() {
-		this.move(this.chooseStrategie());
+	public char getType() {
+		return 'V';
 	}
-
+	
+	@Override
+	public ColorAgent getColor() {
+		return null;
+	}
 }

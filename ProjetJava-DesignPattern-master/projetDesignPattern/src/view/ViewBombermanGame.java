@@ -35,8 +35,8 @@ public class ViewBombermanGame implements Observer {
 
 	@Override
 	public void update(int nombreTour) {
-//		this.panelBomberman.updateInfoGame(this.controller.getBombermanGame().getInputMap().getStart_breakable_walls(), this.controller.getBombermanGame().getInfoAgents(), null, this.controller.getBombermanGame().getBombes());
-//		this.panelBomberman.repaint();
+		this.panelBomberman.updateInfoGame(this.controller.getBombermanGame().getInfoMurs(), this.controller.getBombermanGame().getInfoAgents(), this.controller.getBombermanGame().getInfoItems(), this.controller.getBombermanGame().getBombes());
+		this.panelBomberman.repaint();
 	}
 	
 	public void addPanel(PanelBomberman panelBomberman) {

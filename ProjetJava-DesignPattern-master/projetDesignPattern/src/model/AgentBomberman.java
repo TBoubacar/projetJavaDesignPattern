@@ -3,25 +3,26 @@ package model;
 import utils.ColorAgent;
 
 public class AgentBomberman extends Agent{
-	private ColorAgent colorAgent;
+	private ColorAgent color;
 	
 	/*---	CONSTRUCTEUR	---*/
 	public AgentBomberman(int x, int y, ColorAgent colorAgent) {
 		super(x, y);
-		this.setColorAgent(colorAgent);
-	}
-
-	public ColorAgent getColorAgent() {
-		return colorAgent;
-	}
-
-	public void setColorAgent(ColorAgent colorAgent) {
-		this.colorAgent = colorAgent;
+		this.setColor(colorAgent);
 	}
 
 	@Override
-	public void executeAction() {
-		this.move(this.chooseStrategie());
+	public char getType() {
+		return 'B';
+	}
+	
+	public void setColor(ColorAgent colorAgent) {
+		this.color = colorAgent;
+	}
+
+	@Override
+	public ColorAgent getColor() {
+		return this.color;
 	}
 
 }
