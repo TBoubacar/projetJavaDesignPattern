@@ -1,6 +1,6 @@
-package Controller;
+package controller;
 
-import utils.Game;
+import model.Game;
 
 public abstract class AbstractController {
 	private Game game;

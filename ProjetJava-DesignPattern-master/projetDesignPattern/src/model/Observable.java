@@ -1,4 +1,4 @@
-package utils;
+package model;
 
 public interface Observable {
 	public void addObserver(Observer o);

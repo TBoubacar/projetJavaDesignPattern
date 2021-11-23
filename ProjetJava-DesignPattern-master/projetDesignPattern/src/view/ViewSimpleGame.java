@@ -9,8 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import Controller.AbstractController;
-import utils.Observer;
+import controller.AbstractController;
+import model.Observer;
 
 public class ViewSimpleGame implements Observer {
 

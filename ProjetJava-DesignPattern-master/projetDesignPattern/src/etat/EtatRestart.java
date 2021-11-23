@@ -1,17 +1,18 @@
-package model;
+package etat;
 
 import view.ViewCommand;
 
-public class EtatStart implements EtatButtonCommande {
+public class EtatRestart implements EtatButtonCommande {
 	private ViewCommand viewCommand;
 
-	public EtatStart (ViewCommand viewCommand) {
+	public EtatRestart (ViewCommand viewCommand) {
 		this.viewCommand = viewCommand;
 
-		this.viewCommand.getjButtonRestart().setEnabled(true);
-		this.viewCommand.getjButtonStart().setEnabled(false);
-		this.viewCommand.getjButtonPlay().setEnabled(false);
-		this.viewCommand.getjButtonPause().setEnabled(true);
+		System.out.println("Rédemarrage du jeu...");
+		this.viewCommand.getjButtonRestart().setEnabled(false);
+		this.viewCommand.getjButtonPause().setEnabled(false);
+		this.viewCommand.getjButtonStart().setEnabled(true);
+		this.viewCommand.getjButtonPlay().setEnabled(true);
 	}
 	
 	@Override
@@ -28,13 +29,13 @@ public class EtatStart implements EtatButtonCommande {
 	
 	@Override
 	public void restart() {
-		this.viewCommand.setEtat(new EtatRestart(this.viewCommand));
-		this.viewCommand.getEtat().restart();
+		this.viewCommand.getController().restart();
 	}
 	
 	@Override
 	public void start() {
-		this.viewCommand.getController().play();
+		this.viewCommand.setEtat(new EtatStart(this.viewCommand));
+		this.viewCommand.getEtat().start();
 	}
 	
 	@Override

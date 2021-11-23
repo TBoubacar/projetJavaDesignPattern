@@ -1,4 +1,4 @@
-package model;
+package agent;
 
 public class AgentRajionFactory implements AgentFactory{
 

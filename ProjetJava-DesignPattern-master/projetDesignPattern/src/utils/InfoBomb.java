@@ -1,5 +1,7 @@
 package utils;
 
+import etat.EtatBombe;
+import etat.EtatBombeStep0;
 
 public class InfoBomb {
 	
@@ -7,7 +9,9 @@ public class InfoBomb {
 	private int y;
 	private int range;
 	private int[] range_wall;
-
+//-------------------
+	private EtatBombe etatBombe;
+//-------------------
 		
 	StateBomb stateBomb;
 
@@ -20,10 +24,17 @@ public class InfoBomb {
 			range_wall[i]=range;
 		}
 		this.stateBomb = stateBomb;
+		
+		this.etatBombe = new EtatBombeStep0(this);
 
 	}
 
 
+	//-------------------
+	public void declencheMinuteurOfBombe() {
+		etatBombe.explose();
+	}
+	//-------------------
 	
 	public int getRange_wall_at(int index) {
 		return range_wall[index];
@@ -74,6 +85,18 @@ public class InfoBomb {
 
 	public void setRange(int range) {
 		this.range = range;
+	}
+
+
+
+	public EtatBombe getEtatBombe() {
+		return etatBombe;
+	}
+
+
+
+	public void setEtatBombe(EtatBombe etatBombe) {
+		this.etatBombe = etatBombe;
 	}
 
 

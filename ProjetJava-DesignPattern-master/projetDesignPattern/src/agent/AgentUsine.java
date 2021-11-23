@@ -1,4 +1,4 @@
-package model;
+package agent;
 
 import java.util.ArrayList;
 import java.util.Hashtable;

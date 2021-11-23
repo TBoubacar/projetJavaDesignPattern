@@ -1,4 +1,4 @@
-package utils;
+package model;
 
 public class SimpleGame extends Game implements Observable {
 

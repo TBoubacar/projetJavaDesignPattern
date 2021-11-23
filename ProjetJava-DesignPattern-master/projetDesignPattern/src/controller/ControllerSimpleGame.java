@@ -1,7 +1,7 @@
-package Controller;
+package controller;
 
-import utils.Game;
-import utils.SimpleGame;
+import model.Game;
+import model.SimpleGame;
 import view.ViewCommand;
 import view.ViewSimpleGame;
 

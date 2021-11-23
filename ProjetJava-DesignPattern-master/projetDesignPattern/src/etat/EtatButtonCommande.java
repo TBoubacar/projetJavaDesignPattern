@@ -1,4 +1,4 @@
-package model;
+package etat;
 
 public interface EtatButtonCommande {
 	public void base();

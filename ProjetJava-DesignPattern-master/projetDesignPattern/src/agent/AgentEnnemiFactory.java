@@ -1,4 +1,4 @@
-package model;
+package agent;
 
 public class AgentEnnemiFactory implements AgentFactory {
 

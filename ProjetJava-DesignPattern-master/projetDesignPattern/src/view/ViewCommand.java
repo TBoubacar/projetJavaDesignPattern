@@ -16,11 +16,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
-import Controller.AbstractController;
-import model.EtatBase;
-import model.EtatButtonCommande;
-import model.EtatFin;
-import utils.Observer;
+import controller.AbstractController;
+import etat.EtatBase;
+import etat.EtatButtonCommande;
+import etat.EtatFin;
+import model.Observer;
 
 public class ViewCommand implements Observer {	
 	JFrame jFrame;

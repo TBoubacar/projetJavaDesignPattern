@@ -1,7 +1,14 @@
-package model;
+package agent;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import model.AleatoireStrategie;
+import model.MoveStrategie;
 import utils.AgentAction;
 import utils.ColorAgent;
+import utils.InfoBomb;
+import utils.StateBomb;
 
 public abstract class Agent {
 	private int x;
@@ -10,7 +17,9 @@ public abstract class Agent {
 	private MoveStrategie moveStrategie;
 	private boolean isInvincible;
 	private boolean isSick;
-
+	private ArrayList<InfoBomb> bombes;			// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS DES BOMBES SUR NOTRE TERRAIN DE JEU POUR UN BOMBERMAN EN PARTICULIER
+	private final int BOMBE_RANGE = 3;			// RANGE DE LA BOMBE SPECIFIQUE À CHAQUE AGENT BOMBERMAN
+	
 	/*---	CONSTRUCTEUR	---*/
 	public Agent(int x, int y) {
 		this.moveStrategie = new AleatoireStrategie();
@@ -19,9 +28,10 @@ public abstract class Agent {
 		this.canFly = false;
 		this.isInvincible = false;
 		this.isSick = false;
+		this.bombes = new ArrayList<InfoBomb>();
 	}
 	
-	/*-----------	METHODES	----------*/
+	/*-----------	METHODES	----------*/	
 	public void move(AgentAction action) {
 		switch (action) {
 		case MOVE_DOWN:
@@ -37,6 +47,16 @@ public abstract class Agent {
 			this.setX(this.getX() + 1);
 			break;
 		default:	//LE CAS OU ON EST STOPÉ
+		}
+	}
+	
+	public void deleteExplosedBombe() {
+		Iterator<InfoBomb> iter = this.bombes.iterator();
+		
+		while(iter.hasNext()) {
+			InfoBomb bombe = iter.next();
+			if(bombe.getStateBomb() == StateBomb.Boom)
+				iter.remove();
 		}
 	}
 
@@ -94,5 +114,17 @@ public abstract class Agent {
 
 	public void setSick(boolean isSick) {
 		this.isSick = isSick;
+	}
+
+	public ArrayList<InfoBomb> getBombes() {
+		return bombes;
+	}
+
+	public void setBombes(ArrayList<InfoBomb> bombes) {
+		this.bombes = bombes;
+	}
+
+	public int getBOMBE_RANGE() {
+		return BOMBE_RANGE;
 	}
 }

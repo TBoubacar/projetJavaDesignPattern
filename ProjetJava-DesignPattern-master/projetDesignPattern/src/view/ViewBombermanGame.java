@@ -5,9 +5,9 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import javax.swing.JFrame;
 
-import Controller.AbstractController;
-import Controller.ControllerBombermanGame;
-import utils.Observer;
+import controller.AbstractController;
+import controller.ControllerBombermanGame;
+import model.Observer;
 
 public class ViewBombermanGame implements Observer {
 

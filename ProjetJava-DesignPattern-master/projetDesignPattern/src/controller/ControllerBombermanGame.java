@@ -1,6 +1,6 @@
-package Controller;
+package controller;
 
-import utils.BombermanGame;
+import model.BombermanGame;
 import view.ViewBombermanGame;
 import view.ViewCommand;
 

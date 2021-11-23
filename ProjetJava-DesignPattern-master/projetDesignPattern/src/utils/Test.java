@@ -1,6 +1,7 @@
 package utils;
 
-import Controller.ControllerBombermanGame;
+import controller.ControllerBombermanGame;
+import model.BombermanGame;
 
 public class Test {
 

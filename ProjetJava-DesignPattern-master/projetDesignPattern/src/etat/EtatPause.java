@@ -1,17 +1,17 @@
-package model;
+package etat;
 
 import view.ViewCommand;
 
-public class EtatPlay implements EtatButtonCommande {
+public class EtatPause implements EtatButtonCommande {
 	private ViewCommand viewCommand;
 
-	public EtatPlay (ViewCommand viewCommand) {
+	public EtatPause (ViewCommand viewCommand) {
 		this.viewCommand = viewCommand;
 
 		this.viewCommand.getjButtonRestart().setEnabled(true);
 		this.viewCommand.getjButtonStart().setEnabled(true);
 		this.viewCommand.getjButtonPlay().setEnabled(true);
-		this.viewCommand.getjButtonPause().setEnabled(false);		
+		this.viewCommand.getjButtonPause().setEnabled(false);
 	}
 	
 	@Override
@@ -40,12 +40,12 @@ public class EtatPlay implements EtatButtonCommande {
 	
 	@Override
 	public void play() {
-		this.viewCommand.getController().step();
+		this.viewCommand.setEtat(new EtatPlay(this.viewCommand));
+		this.viewCommand.getEtat().play();
 	}
 	
 	@Override
 	public void pause() {
-		this.viewCommand.setEtat(new EtatPause(this.viewCommand));
-		this.viewCommand.getEtat().pause();
+		this.viewCommand.getController().pause();
 	}
 }

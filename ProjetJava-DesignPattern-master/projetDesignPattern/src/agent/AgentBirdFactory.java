@@ -1,4 +1,4 @@
-package model;
+package agent;
 
 public class AgentBirdFactory implements AgentFactory {
 

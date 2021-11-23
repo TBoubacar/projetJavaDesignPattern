@@ -1,4 +1,4 @@
-package utils;
+package model;
 
 public interface Observer {
 	public void update(int nombreTour);

@@ -1,8 +1,6 @@
-package utils;
+package model;
 
 import java.util.ArrayList;
-
-import model.InputMap;
 
 public abstract class Game implements Runnable, Observable {
 	private int turn;
