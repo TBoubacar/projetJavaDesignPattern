@@ -160,7 +160,7 @@ public class ViewCommand implements Observer {
 		}
 		
 		// GESTION DE LA FIN DU JEU
-		if(this.controller.getGame().getTurn() == this.controller.getGame().getMaxturn()) {
+		if(this.controller.getGame().getTurn() == this.controller.getGame().getMaxturn() || !this.controller.getGame().gameContinue()) {
 			this.setEtat(new EtatFin(this));
 		}
 	}

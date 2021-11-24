@@ -18,7 +18,7 @@ public abstract class Agent {
 	private boolean isInvincible;
 	private boolean isSick;
 	private ArrayList<InfoBomb> bombes;			// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS DES BOMBES SUR NOTRE TERRAIN DE JEU POUR UN BOMBERMAN EN PARTICULIER
-	private final int BOMBE_RANGE = 3;			// RANGE DE LA BOMBE SPECIFIQUE À CHAQUE AGENT BOMBERMAN
+	private final int BOMBE_RANGE = 2;			// RANGE DE LA BOMBE SPECIFIQUE À CHAQUE AGENT BOMBERMAN
 	
 	/*---	CONSTRUCTEUR	---*/
 	public Agent(int x, int y) {

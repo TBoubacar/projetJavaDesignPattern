@@ -13,6 +13,11 @@ import utils.InfoItem;
 import utils.StateBomb;
 
 public class BombermanGame extends Game {
+	/*
+	 * 	DANS MA METHODOLOGIE D'IMPLEMENTATION DU CODE, TOUS LES AGENTS BOMBERMANS SONT ALLIÉS
+	 */
+	
+	private boolean finish;						// VARIABLE PERMETTANT DE METTRE FIN AU JEU
 	private AgentUsine usineOfAgent;			// CECI CORRESPOND À UNE USINE D'AGENTS PERMETTANT DE CRÉER DIFFÉRENT TYPE D'AGENT (ON NE POSSÈDE QUE 4 TYPES POUR LE MOMENT)
 	private ArrayList<Agent> agents;			// CECI CORRESPOND À L'ENSEMBLE DES AGENTS CRÉÉS DANS NOTRE USINE
 
@@ -23,6 +28,7 @@ public class BombermanGame extends Game {
 
 	public BombermanGame(int tourMax, String filename) {
 		super(tourMax);
+		this.finish = false;	
 		this.usineOfAgent = AgentUsine.getInstance();
 		this.agents = new ArrayList<Agent>();
 		this.bombes = new ArrayList<InfoBomb>();
@@ -33,7 +39,7 @@ public class BombermanGame extends Game {
 			e.printStackTrace();
 		}
 		this.infoAgents = new ArrayList<InfoAgent>();
-		this.infoMurs = new boolean[this.getInputMap().get_walls().length][this.getInputMap().get_walls().length];
+		this.infoMurs = new boolean[this.getInputMap().get_walls().length][this.getInputMap().get_walls()[0].length];
 		this.setInfoItems(new ArrayList<InfoItem>());
 
 		for(InfoAgent a : this.getInputMap().getStart_agents())
@@ -50,7 +56,6 @@ public class BombermanGame extends Game {
 		this.bombes = bombes;
 	}
 
-	//	-----------CODE A IMPLEMENTER----------SEANCE 3.4
 	public boolean isLegalMove(Agent agent, AgentAction agentAction) {
 		// LE DEPLACEMENT N'EST POSSIBLE QUE SI ON NE SE TROUVERA PAS À LA MÊME POSITION QU'UN MÛR QUELQUE SOIT SON TYPE (BRISABLE OU PAS)
 		if((agent.getX() >= 1 && agent.getY() >= 1) && (agent.getX() <= this.getInputMap().get_walls().length && agent.getY() <= this.getInputMap().get_walls().length)) {
@@ -89,11 +94,6 @@ public class BombermanGame extends Game {
 			agent.move(action);
 	}
 
-	//	public void putBomb(int xBomberman, int yBomberman) {
-	//		InfoBomb bombe = new InfoBomb(xBomberman, yBomberman, RANGE, StateBomb.Step0);
-	//		this.bombes.add(bombe);
-	//	}		//JE TROUVE LA SOLUTION DE DESSOUS PLUS OPTIMALE
-
 	public void putBomb(Agent bomberman) {
 		if(bomberman.getType() == 'B') {
 			InfoBomb bombe = new InfoBomb(bomberman.getX(), bomberman.getY(), bomberman.getBOMBE_RANGE(), StateBomb.Step0);
@@ -107,13 +107,13 @@ public class BombermanGame extends Game {
 	@Override
 	public void initializeGame() {
 		int i = 0;
-		for(boolean[] a : this.getInputMap().getStart_breakable_walls())
-			this.infoMurs[i++] = a;
-
+		for(boolean[] m : this.getInputMap().getStart_breakable_walls())
+			this.infoMurs[i++] = m.clone();
+		this.finish = false;
 		this.agents.clear();
 		this.bombes.clear();
-		this.infoAgents.clear();
 		this.infoItems.clear();
+		this.infoAgents.clear();
 
 		for(InfoAgent agent : this.getInputMap().getStart_agents()) {
 			this.agents.add(this.usineOfAgent.createAgent(agent.getType(), agent.getColor(), agent.getX(), agent.getY()));
@@ -121,39 +121,105 @@ public class BombermanGame extends Game {
 		//		System.out.println(this.usineOfAgent);		// VOUS POUVEZ DECOMMENTER CE CODE POUR VOUS ASSURER QUE LA CLASSE HASHTABLE GERE BIEN LE CAS DES DOUBLONS ET EVITE DE LES INSERER
 	}
 
+	public ArrayList<InfoAgent> agentToucher(int xExplosion, int yExplosion, int rangeExplosion) {
+		ArrayList<InfoAgent> agentsToucher = new ArrayList<InfoAgent>();
+		for(InfoAgent a: this.infoAgents) {
+			if((a.getX() == xExplosion && a.getY() >= (yExplosion-rangeExplosion) && a.getY() <= (yExplosion+rangeExplosion)) || (a.getY() == yExplosion && a.getX() >= (xExplosion-rangeExplosion) && a.getX() <= (xExplosion+rangeExplosion)))
+				agentsToucher.add(a);
+		}
+		return agentsToucher;
+	}	//CETTE FONCTION ME PERMET DE RECUPERER LA LISTE DES INFORMATIONS SUR LES AGENTS TOUCHER PAR L'EXPLOSION DE LA BOMBE A PARTIR DE LA POSITION D'EXPLOSION DE LA BOMBE
+	
+	public void deleteDiedAgent(InfoAgent cetAgent) {
+		if(cetAgent != null) {
+			Iterator<Agent> iter = this.agents.iterator();
+			Iterator<InfoAgent> iter2 = this.infoAgents.iterator();
+			
+			while(iter.hasNext()) {		// ON SUPPRIME L'AGENT 
+				Agent agent = iter.next();
+				if(agent.getType() == cetAgent.getType() && agent.getX() == cetAgent.getX() && agent.getY() == cetAgent.getY()) {
+					iter.remove();				
+				}
+			}
+			while(iter2.hasNext()) {	// PUIS ON SUPPRIME LES INFORMATIONS SUR L'AGENT
+				InfoAgent agent = iter2.next();
+				if(agent == cetAgent) {
+					iter2.remove();				
+				}
+			}
+			
+		}
+	}	// CETTE FONCTION ME PERMET DE SUPPRIMER UN AGENT SUPPOSÉ ETRE TOUCHÉ PAR UNE BOMBE
+
+	public void deleteExplosedMur(int xExplosion, int yExplosion, int rangeExplosion) {
+		this.infoMurs[xExplosion][yExplosion] = false;
+		for(int i = 1; i <= rangeExplosion; ++i) {
+			if((xExplosion-i) >= 1) this.infoMurs[xExplosion-i][yExplosion] = false;
+			if((xExplosion+i) < this.infoMurs.length) this.infoMurs[xExplosion+i][yExplosion] = false;
+			if((yExplosion-i) >= 1) this.infoMurs[xExplosion][yExplosion-i] = false;
+			if((yExplosion+i) < this.infoMurs[0].length) this.infoMurs[xExplosion][yExplosion+i] = false;
+		}
+	}	// CETTE FONCTION ME PERMET DE SUPPRIMER UN MUR SUPPOSÉ ETRE TOUCHÉ PAR UNE BOMBE SUR NOTRE CARTE
+	
 	public void deleteExplosedBombe() {
 		Iterator<InfoBomb> iter = this.bombes.iterator();
 		
 		while(iter.hasNext()) {
 			InfoBomb bombe = iter.next();
-			if(bombe.getStateBomb() == StateBomb.Boom)
+			if(bombe.getStateBomb() == StateBomb.Boom) {
+				for(InfoAgent agent :this.agentToucher(bombe.getX(), bombe.getY(), bombe.getRange())) {
+					this.deleteDiedAgent(agent);
+				}
+				this.deleteExplosedMur(bombe.getX(), bombe.getY(), bombe.getRange());
 				iter.remove();
+			}
 		}
+	}
+	
+	public boolean hasSurvivantAgentBomberman() {
+		for(Agent a: this.agents) {
+			if(a.getType() == 'B') return true;
+		} return false;
+	}
+	
+	public InfoAgent eatBomberman() {		
+		for(InfoAgent agent : this.infoAgents) {		// ON SUPPRIME LES INFORMATIONS SUR LES AGENTS BOMBERMAN QUI DOIVENT ETRE MANGER
+			for(InfoAgent cetAgent : this.infoAgents) {
+				if(agent.getType() == 'B' && agent.getType() != cetAgent.getType() && agent.getX() == cetAgent.getX() && agent.getY() == cetAgent.getY()) {
+					return agent;				
+				}
+			}
+		} return null;
 	}
 	
 	@Override
 	public void takeTurn() {
 		String msg = "Tour " + super.getTurn() + " du jeu en cours";
 		System.out.println(msg);
-
+		
+		this.deleteExplosedBombe();
+		this.deleteDiedAgent(this.eatBomberman());
+		
+		if(!this.hasSurvivantAgentBomberman()) {
+			// S'IL N'Y A PLUS DE SURVIVANT, ALORS LE JEU EST TERMINÉ
+			this.gameOver();
+		}
+		
 		Random hasard= new Random(System.currentTimeMillis());
 		this.infoAgents.clear();		// ON VA METTRE À JOUR LES INFORMATIONS SUR LES AGENTS
 
 		for(Agent agent : this.agents) {
-			agent.deleteExplosedBombe();
-			
 			AgentAction action = agent.chooseStrategie();
 
-			if(hasard.nextInt(5) == 0 && agent.getType() == 'B') {
+			if(hasard.nextInt(40) == 0 && agent.getType() == 'B') {
 				this.putBomb(agent);	
 			}
 			this.moveAgent(agent, action);
 
 			InfoAgent infoAgent = new InfoAgent(agent.getX(), agent.getY(), action, agent.getType(), agent.getColor(), agent.isInvincible(), agent.isSick());
 			this.infoAgents.add(infoAgent);
+			agent.deleteExplosedBombe();
 		}
-		
-		this.deleteExplosedBombe();
 		
 		for(InfoBomb bombe: this.bombes) {
 			bombe.declencheMinuteurOfBombe();
@@ -162,13 +228,16 @@ public class BombermanGame extends Game {
 
 	@Override
 	public boolean gameContinue() {
-		return true;
+		return !this.finish;
 	}
 
 	@Override
 	public void gameOver() {
-		String msg = "Oooh Oooooohhh! Vous avez échoué. \nPartie Terminé (^_^)";
+		this.bombes.clear(); this.agents.clear();
+		String msg = "Oooh Oooooohhh! Vos agents bomberman ont été mangé. \nPartie Terminé (^_^)";
 		System.out.println(msg);
+		this.finish = true;
+		this.setRunning(false);
 		this.notifyObserver();
 	}
 
