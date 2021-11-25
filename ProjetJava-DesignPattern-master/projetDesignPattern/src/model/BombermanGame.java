@@ -14,7 +14,9 @@ import utils.StateBomb;
 
 public class BombermanGame extends Game {
 	/*
-	 * 	DANS MA METHODOLOGIE D'IMPLEMENTATION DU CODE, TOUS LES AGENTS BOMBERMANS SONT ALLIÉS
+	 * 	DANS MA METHODOLOGIE D'IMPLEMENTATION DU CODE, TOUS LES AGENTS BOMBERMANS SONT ALLIÉS LORS QUE J'UTILISE LA METHODE : deleteExplosedBombe()
+	 * 	ET ILS SONT TOUS ENNEMIS QUAND ON UTILISE LA METHODE : deleteExplosedBombe2() 
+	 * 	DANS LA METHODE takeTurn()
 	 */
 	
 	private boolean finish;						// VARIABLE PERMETTANT DE METTRE FIN AU JEU
@@ -121,14 +123,26 @@ public class BombermanGame extends Game {
 		//		System.out.println(this.usineOfAgent);		// VOUS POUVEZ DECOMMENTER CE CODE POUR VOUS ASSURER QUE LA CLASSE HASHTABLE GERE BIEN LE CAS DES DOUBLONS ET EVITE DE LES INSERER
 	}
 
-	public ArrayList<InfoAgent> agentToucher(int xExplosion, int yExplosion, int rangeExplosion) {
+	public ArrayList<InfoAgent> agentToucher(InfoBomb bombe) {
 		ArrayList<InfoAgent> agentsToucher = new ArrayList<InfoAgent>();
 		for(InfoAgent a: this.infoAgents) {
-			if((a.getX() == xExplosion && a.getY() >= (yExplosion-rangeExplosion) && a.getY() <= (yExplosion+rangeExplosion)) || (a.getY() == yExplosion && a.getX() >= (xExplosion-rangeExplosion) && a.getX() <= (xExplosion+rangeExplosion)))
-				agentsToucher.add(a);
+			if((a.getType() != 'B' && a.getX() == bombe.getX() && a.getY() >= (bombe.getY()-bombe.getRange()) && a.getY() <= (bombe.getY()+bombe.getRange())) || (a.getType() != 'B' && a.getY() == bombe.getY() && a.getX() >= (bombe.getX()-bombe.getRange()) && a.getX() <= (bombe.getX()+bombe.getRange()))) {
+				agentsToucher.add(a);				
+			}
 		}
 		return agentsToucher;
 	}	//CETTE FONCTION ME PERMET DE RECUPERER LA LISTE DES INFORMATIONS SUR LES AGENTS TOUCHER PAR L'EXPLOSION DE LA BOMBE A PARTIR DE LA POSITION D'EXPLOSION DE LA BOMBE
+
+	public ArrayList<InfoAgent> agentToucher2(InfoBomb bombe) {
+		ArrayList<InfoAgent> agentsToucher = new ArrayList<InfoAgent>();
+		for(Agent a: this.agents) {
+			if((!a.getBombes().contains(bombe) && a.getX() == bombe.getX() && a.getY() >= (bombe.getY()-bombe.getRange()) && a.getY() <= (bombe.getY()+bombe.getRange())) || (!a.getBombes().contains(bombe) && a.getY() == bombe.getY() && a.getX() >= (bombe.getX()-bombe.getRange()) && a.getX() <= (bombe.getX()+bombe.getRange()))) {
+				InfoAgent infoAgent = new InfoAgent(a.getX(), a.getY(), null, a.getType(), a.getColor(), a.isInvincible(), a.isSick());
+				agentsToucher.add(infoAgent);
+			}
+		}
+		return agentsToucher;
+	}	//CETTE FONCTION ME PERMET DE RECUPERER LA LISTE DES INFORMATIONS SUR LES AGENTS TOUCHER PAR L'EXPLOSION DE LA BOMBE (SANS COMPTER LE POSEUR DE BOMBE) A PARTIR DE LA POSITION D'EXPLOSION DE LA BOMBE
 	
 	public void deleteDiedAgent(InfoAgent cetAgent) {
 		if(cetAgent != null) {
@@ -151,35 +165,44 @@ public class BombermanGame extends Game {
 		}
 	}	// CETTE FONCTION ME PERMET DE SUPPRIMER UN AGENT SUPPOSÉ ETRE TOUCHÉ PAR UNE BOMBE
 
-	public void deleteExplosedMur(int xExplosion, int yExplosion, int rangeExplosion) {
-		this.infoMurs[xExplosion][yExplosion] = false;
-		for(int i = 1; i <= rangeExplosion; ++i) {
-			if((xExplosion-i) >= 1) this.infoMurs[xExplosion-i][yExplosion] = false;
-			if((xExplosion+i) < this.infoMurs.length) this.infoMurs[xExplosion+i][yExplosion] = false;
-			if((yExplosion-i) >= 1) this.infoMurs[xExplosion][yExplosion-i] = false;
-			if((yExplosion+i) < this.infoMurs[0].length) this.infoMurs[xExplosion][yExplosion+i] = false;
+	public void deleteExplosedMur(InfoBomb bombe) {
+		this.infoMurs[bombe.getX()][bombe.getY()] = false;
+		for(int i = 1; i <= bombe.getRange(); ++i) {
+			if((bombe.getX()-i) >= 1) this.infoMurs[bombe.getX()-i][bombe.getY()] = false;
+			if((bombe.getX()+i) < this.infoMurs.length) this.infoMurs[bombe.getX()+i][bombe.getY()] = false;
+			if((bombe.getY()-i) >= 1) this.infoMurs[bombe.getX()][bombe.getY()-i] = false;
+			if((bombe.getY()+i) < this.infoMurs[0].length) this.infoMurs[bombe.getX()][bombe.getY()+i] = false;
 		}
 	}	// CETTE FONCTION ME PERMET DE SUPPRIMER UN MUR SUPPOSÉ ETRE TOUCHÉ PAR UNE BOMBE SUR NOTRE CARTE
 	
-	public void deleteExplosedBombe() {
+	public void deleteExplosedBombe() {		// LORS QUE NOS BOMBERMANS SONT ALLIÉS
 		Iterator<InfoBomb> iter = this.bombes.iterator();
 		
 		while(iter.hasNext()) {
 			InfoBomb bombe = iter.next();
 			if(bombe.getStateBomb() == StateBomb.Boom) {
-				for(InfoAgent agent :this.agentToucher(bombe.getX(), bombe.getY(), bombe.getRange())) {
+				for(InfoAgent agent :this.agentToucher(bombe)) {
 					this.deleteDiedAgent(agent);
 				}
-				this.deleteExplosedMur(bombe.getX(), bombe.getY(), bombe.getRange());
+				this.deleteExplosedMur(bombe);
 				iter.remove();
 			}
 		}
 	}
-	
-	public boolean hasSurvivantAgentBomberman() {
-		for(Agent a: this.agents) {
-			if(a.getType() == 'B') return true;
-		} return false;
+
+	public void deleteExplosedBombe2() {		// LORS QUE NOS BOMBERMANS NE SONT PAS ALLIÉS
+		Iterator<InfoBomb> iter = this.bombes.iterator();
+		
+		while(iter.hasNext()) {
+			InfoBomb bombe = iter.next();
+			if(bombe.getStateBomb() == StateBomb.Boom) {
+				for(InfoAgent agent :this.agentToucher2(bombe)) {
+					this.deleteDiedAgent(agent);
+				}
+				this.deleteExplosedMur(bombe);
+				iter.remove();
+			}
+		}
 	}
 	
 	public InfoAgent eatBomberman() {		
@@ -191,19 +214,33 @@ public class BombermanGame extends Game {
 			}
 		} return null;
 	}
-	
+
+	public boolean hasSurvivantAgentBomberman() {		// CETTE METHODE ME PERMET DE SAVOIR S'IL RESTE UN AGENT BOMBERMAN SUR LE TERRAIN
+		for(Agent a: this.agents) {
+			if(a.getType() == 'B') return true;
+		} return false;
+	}
+
+	public boolean hasSurvivantAgentPNJ() {				// CETTE METHODE ME PERMET DE SAVOIR S'IL RESTE UN AGENT PNJ SUR LE TERRAIN
+		for(Agent a: this.agents) {
+			if(a.getType() != 'B') return true;
+		} return false;
+	}
+
+	public boolean hasOneSurvivant() {					// CETTE METHODE ME PERMET DE SAVOIR S'IL RESTE UN ET UN SEUL AGENT BOMBERMAN SUR LE TERRAIN (DANS LE CAS OÙ TOUS LES AGENTS SONT ENEMIS)
+		return this.agents.size() <= 1 && this.agents.get(this.agents.size()-1).getType() == 'B';
+	}
+
 	@Override
 	public void takeTurn() {
 		String msg = "Tour " + super.getTurn() + " du jeu en cours";
 		System.out.println(msg);
 		
-		this.deleteExplosedBombe();
+//		this.deleteExplosedBombe();		// AVEC CETTE METHODE LES BOMBERMAN SONT TOUS ALLIÉS
+		this.deleteExplosedBombe2();	// AVEC CETTE METHODE LES BOMBERMAN SONT TOUS ENNEMIS
 		this.deleteDiedAgent(this.eatBomberman());
 		
-		if(!this.hasSurvivantAgentBomberman()) {
-			// S'IL N'Y A PLUS DE SURVIVANT, ALORS LE JEU EST TERMINÉ
-			this.gameOver();
-		}
+		this.verifyEtatOfGame();
 		
 		Random hasard= new Random(System.currentTimeMillis());
 		this.infoAgents.clear();		// ON VA METTRE À JOUR LES INFORMATIONS SUR LES AGENTS
@@ -211,7 +248,7 @@ public class BombermanGame extends Game {
 		for(Agent agent : this.agents) {
 			AgentAction action = agent.chooseStrategie();
 
-			if(hasard.nextInt(40) == 0 && agent.getType() == 'B') {
+			if(hasard.nextInt(25) == 0 && agent.getType() == 'B') {
 				this.putBomb(agent);	
 			}
 			this.moveAgent(agent, action);
@@ -233,14 +270,49 @@ public class BombermanGame extends Game {
 
 	@Override
 	public void gameOver() {
-		this.bombes.clear(); this.agents.clear();
-		String msg = "Oooh Oooooohhh! Vos agents bomberman ont été mangé. \nPartie Terminé (^_^)";
+		this.bombes.clear();
+		String msg = "Oooh Oooooohhh ! Vos agents bomberman ont été mangé. \nPartie Terminé (^_^)";
 		System.out.println(msg);
 		this.finish = true;
 		this.setRunning(false);
 		this.notifyObserver();
 	}
 
+	public void gameWin() {
+		this.bombes.clear();
+		String msg = "Félicitations ! Un agent bomberman a remporté la partie. \nPartie Terminé (^_^)";
+		System.out.println(msg);
+		this.finish = true;
+		this.setRunning(false);
+		this.notifyObserver();
+	}
+	
+	public void egalityGame() {
+		this.bombes.clear();
+		String msg = "Ouuppss ! Il y a match null. \nPartie Terminé (^_^)";
+		System.out.println(msg);
+		this.finish = true;
+		this.setRunning(false);
+		this.notifyObserver();
+	}
+
+	public void verifyEtatOfGame() {
+		// S'IL N'Y A PLUS DE SURVIVANT, ALORS LE JEU EST TERMINÉ
+		if(!this.hasSurvivantAgentBomberman()) {
+			this.gameOver();
+		} 
+//		else if(!this.hasSurvivantAgentPNJ()) {				// DECOMMENTE CETTE FONCTION SI TU VEUX QUE LES AGENTS BOMBERMAN SOIENT DES ALLIÉS.
+//			this.gameWin();
+//		}
+		else if(this.hasOneSurvivant()) {					// DECOMMENTE CETTE FONCTION SI TU VEUX QUE LES AGENTS BOMBERMAN SOIENT DES ENNEMIES.
+			this.gameWin();
+		} else if (this.getTurn() == this.getMaxturn()){
+			this.egalityGame();
+		} else {
+			// Je ne fais rien
+		}
+	}
+	
 	/*---		GETTERS AND SETTERS		---*/
 	public AgentUsine getUsineOfAgent() {
 		return usineOfAgent;
