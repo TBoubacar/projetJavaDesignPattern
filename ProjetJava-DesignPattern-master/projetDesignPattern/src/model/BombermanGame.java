@@ -21,19 +21,23 @@ public class BombermanGame extends Game {
 	
 	private boolean finish;						// VARIABLE PERMETTANT DE METTRE FIN AU JEU
 	private AgentUsine usineOfAgent;			// CECI CORRESPOND À UNE USINE D'AGENTS PERMETTANT DE CRÉER DIFFÉRENT TYPE D'AGENT (ON NE POSSÈDE QUE 4 TYPES POUR LE MOMENT)
+
 	private ArrayList<Agent> agents;			// CECI CORRESPOND À L'ENSEMBLE DES AGENTS CRÉÉS DANS NOTRE USINE
+	private ArrayList<Item> items;				// CECI CORRESPOND À L'ENSEMBLE DES AGENTS CRÉÉS DANS NOTRE USINE
+	private ArrayList<InfoBomb> bombes;			// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS SUR LES BOMBES SUR NOTRE TERRAIN DE JEU
 
 	private ArrayList<InfoAgent> infoAgents;	// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS SUR LES AGENTS SUR NOTRE TERRAIN DE JEU
 	private ArrayList<InfoItem> infoItems;		// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS SUR LES ITEMS SUR NOTRE TERRAIN DE JEU
 	private boolean[][] infoMurs;				// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS SUR LES MÛRS BRISABLE SUR NOTRE TERRAIN DE JEU
-	private ArrayList<InfoBomb> bombes;			// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS SUR LES BOMBES SUR NOTRE TERRAIN DE JEU
 
 	public BombermanGame(int tourMax, String filename) {
 		super(tourMax);
-		this.finish = false;	
+		this.finish = false;
 		this.usineOfAgent = AgentUsine.getInstance();
+		
 		this.agents = new ArrayList<Agent>();
 		this.bombes = new ArrayList<InfoBomb>();
+		this.items = new ArrayList<Item>();
 
 		try {
 			this.setInputMap(new InputMap(filename));
@@ -114,6 +118,7 @@ public class BombermanGame extends Game {
 		this.finish = false;
 		this.agents.clear();
 		this.bombes.clear();
+		this.items.clear();
 		this.infoItems.clear();
 		this.infoAgents.clear();
 
@@ -167,11 +172,36 @@ public class BombermanGame extends Game {
 
 	public void deleteExplosedMur(InfoBomb bombe) {
 		this.infoMurs[bombe.getX()][bombe.getY()] = false;
+		
 		for(int i = 1; i <= bombe.getRange(); ++i) {
-			if((bombe.getX()-i) >= 1) this.infoMurs[bombe.getX()-i][bombe.getY()] = false;
-			if((bombe.getX()+i) < this.infoMurs.length) this.infoMurs[bombe.getX()+i][bombe.getY()] = false;
-			if((bombe.getY()-i) >= 1) this.infoMurs[bombe.getX()][bombe.getY()-i] = false;
-			if((bombe.getY()+i) < this.infoMurs[0].length) this.infoMurs[bombe.getX()][bombe.getY()+i] = false;
+			if((bombe.getX()-i) >= 1) {
+				if(this.infoMurs[bombe.getX()-i][bombe.getY()]) {
+					Item item = new Item(bombe.getX()-i, bombe.getY());
+					this.infoItems.add(new InfoItem(item.getX(), item.getY(), item.chooseAleatoireItem()));
+				}
+				this.infoMurs[bombe.getX()-i][bombe.getY()] = false;
+			}
+			if((bombe.getX()+i) < this.infoMurs.length) {
+				if(this.infoMurs[bombe.getX()+i][bombe.getY()]) {
+					Item item = new Item(bombe.getX()+i, bombe.getY());
+					this.infoItems.add(new InfoItem(item.getX(), item.getY(), item.chooseAleatoireItem()));
+				}
+				this.infoMurs[bombe.getX()+i][bombe.getY()] = false;
+			}
+			if((bombe.getY()-i) >= 1) {
+				if(this.infoMurs[bombe.getX()][bombe.getY()-i]) {
+					Item item = new Item(bombe.getX(), bombe.getY()-i);
+					this.infoItems.add(new InfoItem(item.getX(), item.getY(), item.chooseAleatoireItem()));
+				}
+				this.infoMurs[bombe.getX()][bombe.getY()-i] = false;
+			}
+			if((bombe.getY()+i) < this.infoMurs[0].length) {
+				if (this.infoMurs[bombe.getX()][bombe.getY()+i]) {
+					Item item = new Item(bombe.getX(), bombe.getY()+i);
+					this.infoItems.add(new InfoItem(item.getX(), item.getY(), item.chooseAleatoireItem()));
+				}
+				this.infoMurs[bombe.getX()][bombe.getY()+i] = false;
+			}
 		}
 	}	// CETTE FONCTION ME PERMET DE SUPPRIMER UN MUR SUPPOSÉ ETRE TOUCHÉ PAR UNE BOMBE SUR NOTRE CARTE
 	
@@ -248,7 +278,7 @@ public class BombermanGame extends Game {
 		for(Agent agent : this.agents) {
 			AgentAction action = agent.chooseStrategie();
 
-			if(hasard.nextInt(25) == 0 && agent.getType() == 'B') {
+			if(hasard.nextInt(20) == 0 && agent.getType() == 'B') {
 				this.putBomb(agent);	
 			}
 			this.moveAgent(agent, action);
@@ -348,5 +378,13 @@ public class BombermanGame extends Game {
 
 	public void setAgents(ArrayList<Agent> agents) {
 		this.agents = agents;
+	}
+
+	public ArrayList<Item> getItems() {
+		return items;
+	}
+
+	public void setItems(ArrayList<Item> items) {
+		this.items = items;
 	}
 }

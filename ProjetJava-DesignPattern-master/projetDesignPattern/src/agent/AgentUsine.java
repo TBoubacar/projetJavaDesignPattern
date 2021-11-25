@@ -42,7 +42,7 @@ public class AgentUsine {
 	public Agent createAgent(char type, ColorAgent color, int x, int y) {
 		// IL N'Y A PAS D'INQUIÉTUDE À CE FAIRE POUR LES DOUBLONS, CAR UN HASTABLE PERMET DE 
 		// REPÉRER LES DOUBLONS ET DONC NE L'INSERT PAS EN TANT QUE NOUVELLE DONNÉE.
-		if(!this.getTypes().contains(type)) {
+//		if(!this.getTypes().contains(type)) {
 			switch (type) {
 			case 'B':	// SEUL LES AGENTS BOMBERMAN SERONT EN COULEUR MALGRÉ TOUT
 				this.factories.put(type, new AgentBombermanFactory(color));
@@ -57,7 +57,7 @@ public class AgentUsine {
 				this.factories.put(type, new AgentEnnemiFactory());
 				break;
 			}	
-		}
+//		}
 		return this.factories.get(type).createAgent(x, y);
 	}
 
