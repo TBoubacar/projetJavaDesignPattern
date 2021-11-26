@@ -10,6 +10,7 @@ import utils.AgentAction;
 import utils.InfoAgent;
 import utils.InfoBomb;
 import utils.InfoItem;
+import utils.ItemType;
 import utils.StateBomb;
 
 public class BombermanGame extends Game {
@@ -69,27 +70,27 @@ public class BombermanGame extends Game {
 			case MOVE_DOWN:
 				if(agent.isCanFly()) return !this.getInputMap().get_walls()[agent.getX()][agent.getY()+1];
 				else
-					return !this.getInputMap().get_walls()[agent.getX()][agent.getY()+1] && !this.getInputMap().getStart_breakable_walls()[agent.getX()][agent.getY()+1];
+					return !this.getInputMap().get_walls()[agent.getX()][agent.getY()+1] && !this.infoMurs[agent.getX()][agent.getY()+1];
 			case MOVE_UP:
 				if(agent.isCanFly()) return !this.getInputMap().get_walls()[agent.getX()][agent.getY()-1];
 				else
-					return !this.getInputMap().get_walls()[agent.getX()][agent.getY()-1] && !this.getInputMap().getStart_breakable_walls()[agent.getX()][agent.getY()-1];
+					return !this.getInputMap().get_walls()[agent.getX()][agent.getY()-1] && !this.infoMurs[agent.getX()][agent.getY()-1];
 			case MOVE_LEFT:
 				if(agent.isCanFly()) return !this.getInputMap().get_walls()[agent.getX()-1][agent.getY()];
 				else
-					return !this.getInputMap().get_walls()[agent.getX()-1][agent.getY()] && !this.getInputMap().getStart_breakable_walls()[agent.getX()-1][agent.getY()];
+					return !this.getInputMap().get_walls()[agent.getX()-1][agent.getY()] && !this.infoMurs[agent.getX()-1][agent.getY()];
 			case MOVE_RIGHT:
 				if(agent.isCanFly()) return !this.getInputMap().get_walls()[agent.getX()+1][agent.getY()];
 				else
-					return !this.getInputMap().get_walls()[agent.getX()+1][agent.getY()] && !this.getInputMap().getStart_breakable_walls()[agent.getX()+1][agent.getY()];
+					return !this.getInputMap().get_walls()[agent.getX()+1][agent.getY()] && !this.infoMurs[agent.getX()+1][agent.getY()];
 			case PUT_BOMB:
 				if(agent.isCanFly()) return !this.getInputMap().get_walls()[agent.getX()][agent.getY()];
 				else 
-					return !this.getInputMap().get_walls()[agent.getX()][agent.getY()] && !this.getInputMap().getStart_breakable_walls()[agent.getX()][agent.getY()];
+					return !this.getInputMap().get_walls()[agent.getX()][agent.getY()] && !this.infoMurs[agent.getX()][agent.getY()];
 			default:
 				if(agent.isCanFly()) return !this.getInputMap().get_walls()[agent.getX()][agent.getY()];
 				else
-					return !this.getInputMap().get_walls()[agent.getX()][agent.getY()] && !this.getInputMap().getStart_breakable_walls()[agent.getX()][agent.getY()];
+					return !this.getInputMap().get_walls()[agent.getX()][agent.getY()] && !this.infoMurs[agent.getX()][agent.getY()];
 			}			
 		} else
 			return false;
@@ -101,12 +102,12 @@ public class BombermanGame extends Game {
 	}
 
 	public void putBomb(Agent bomberman) {
-		if(bomberman.getType() == 'B') {
+		if(bomberman.getType() == 'B' && !bomberman.isSick()) {
 			InfoBomb bombe = new InfoBomb(bomberman.getX(), bomberman.getY(), bomberman.getBOMBE_RANGE(), StateBomb.Step0);
 			bomberman.getBombes().add(bombe);	//	UTILE POUR DIFFÉRENTIER LES BOMBES APPARTENANT A CHAQUE BOMBERMAN. DE CETTE MANIÈRE LES BOMBERMANS NE SERONT PAS TUÉS PAR LEURS PROPRES BOMBES
 			this.bombes.add(bombe);			
 		} else {
-			System.out.println("SEUL LES BOMBERMANS ONT LA POSSIBILITÉ DE POSER DES BOMBES, DÉSOLÉ !");
+			System.out.println("LE BOMBERMAN (" + bomberman.getX() + ", " + bomberman.getY()  + ") EST MALADE POUR POSER DES BOMBES, DÉSOLÉ !");
 		}
 	}
 
@@ -156,8 +157,9 @@ public class BombermanGame extends Game {
 			
 			while(iter.hasNext()) {		// ON SUPPRIME L'AGENT 
 				Agent agent = iter.next();
-				if(agent.getType() == cetAgent.getType() && agent.getX() == cetAgent.getX() && agent.getY() == cetAgent.getY()) {
-					iter.remove();				
+				if(!agent.isInvincible() && agent.getType() == cetAgent.getType() && agent.getX() == cetAgent.getX() && agent.getY() == cetAgent.getY()) {
+					iter.remove();
+					System.out.println("Agent [" + agent.getType() + "] éliminé à la position (" + agent.getX() + ", " + agent.getY() + ")");
 				}
 			}
 			while(iter2.hasNext()) {	// PUIS ON SUPPRIME LES INFORMATIONS SUR L'AGENT
@@ -177,28 +179,47 @@ public class BombermanGame extends Game {
 			if((bombe.getX()-i) >= 1) {
 				if(this.infoMurs[bombe.getX()-i][bombe.getY()]) {
 					Item item = new Item(bombe.getX()-i, bombe.getY());
-					this.infoItems.add(new InfoItem(item.getX(), item.getY(), item.chooseAleatoireItem()));
+					ItemType itemType = item.chooseAleatoireItem();
+					if(itemType != null) {
+						item.setItemType(itemType);
+						this.items.add(item);
+						this.infoItems.add(new InfoItem(item.getX(), item.getY(), itemType));
+					}
 				}
 				this.infoMurs[bombe.getX()-i][bombe.getY()] = false;
 			}
 			if((bombe.getX()+i) < this.infoMurs.length) {
 				if(this.infoMurs[bombe.getX()+i][bombe.getY()]) {
 					Item item = new Item(bombe.getX()+i, bombe.getY());
-					this.infoItems.add(new InfoItem(item.getX(), item.getY(), item.chooseAleatoireItem()));
+					ItemType itemType = item.chooseAleatoireItem();
+					if(itemType != null) {
+						item.setItemType(itemType);
+						this.items.add(item);
+						this.infoItems.add(new InfoItem(item.getX(), item.getY(), itemType));
+					}
 				}
 				this.infoMurs[bombe.getX()+i][bombe.getY()] = false;
 			}
 			if((bombe.getY()-i) >= 1) {
 				if(this.infoMurs[bombe.getX()][bombe.getY()-i]) {
 					Item item = new Item(bombe.getX(), bombe.getY()-i);
-					this.infoItems.add(new InfoItem(item.getX(), item.getY(), item.chooseAleatoireItem()));
-				}
+					ItemType itemType = item.chooseAleatoireItem();
+					if(itemType != null) {
+						item.setItemType(itemType);
+						this.items.add(item);
+						this.infoItems.add(new InfoItem(item.getX(), item.getY(), itemType));
+					}				}
 				this.infoMurs[bombe.getX()][bombe.getY()-i] = false;
 			}
 			if((bombe.getY()+i) < this.infoMurs[0].length) {
 				if (this.infoMurs[bombe.getX()][bombe.getY()+i]) {
 					Item item = new Item(bombe.getX(), bombe.getY()+i);
-					this.infoItems.add(new InfoItem(item.getX(), item.getY(), item.chooseAleatoireItem()));
+					ItemType itemType = item.chooseAleatoireItem();
+					if(itemType != null) {
+						item.setItemType(itemType);
+						this.items.add(item);
+						this.infoItems.add(new InfoItem(item.getX(), item.getY(), itemType));
+					}
 				}
 				this.infoMurs[bombe.getX()][bombe.getY()+i] = false;
 			}
@@ -238,13 +259,48 @@ public class BombermanGame extends Game {
 	public InfoAgent eatBomberman() {		
 		for(InfoAgent agent : this.infoAgents) {		// ON SUPPRIME LES INFORMATIONS SUR LES AGENTS BOMBERMAN QUI DOIVENT ETRE MANGER
 			for(InfoAgent cetAgent : this.infoAgents) {
-				if(agent.getType() == 'B' && agent.getType() != cetAgent.getType() && agent.getX() == cetAgent.getX() && agent.getY() == cetAgent.getY()) {
+				if(!agent.isInvincible() && agent.getType() == 'B' && agent.getType() != cetAgent.getType() && agent.getX() == cetAgent.getX() && agent.getY() == cetAgent.getY()) {
 					return agent;				
 				}
 			}
 		} return null;
 	}
+	
+	public void deleteItem(Item cetItem) {		// PERMET DE SUPPRIMER UN ITEM DU TERRAIN
+		if(cetItem != null) {
+			Iterator<Item> iter = this.items.iterator();
+			Iterator<InfoItem> iter2 = this.infoItems.iterator();
+			
+			while(iter.hasNext()) {		// ON SUPPRIME L'ITEM 
+				Item item = iter.next();
+				if(item == cetItem) {
+					iter.remove();
+				}
+			}
+			while(iter2.hasNext()) {			// PUIS ON SUPPRIME LES INFORMATIONS SUR L'ITEM
+				InfoItem itemInfo = iter2.next();
+				if(itemInfo.getType() == cetItem.getItemType() && itemInfo.getX() == cetItem.getX() && itemInfo.getY() == cetItem.getY()) {
+					iter2.remove();
+				}
+			}
+		}
+	}
 
+	public Item eatItem() {					// PERMET A UN BOMBERMAN D'ACQUERIR LES EFFETS POSITIFS OU NEGATIFS D'UN ITEM ET RETOURNE CET ITEM AFIN QUE LA FONCTION deleteItem() SE CHARGE DE LE SUPPRIMER
+		if(this.items.size() > 0) {
+			for(Agent agent : this.agents) {
+				for(Item item: this.items) {
+					if(item.getItemType() != null && agent.getType() == 'B' && agent.getX() == item.getX() && agent.getY() == item.getY()) {
+						System.out.println("Le type d'item pris en position ("  + agent.getX() + ", " + agent.getY()  + ") est : [" + item.getItemType() + "]");
+						agent.applyItemEffet(item);
+						return item;
+					}
+				}
+			}	
+		}
+		return null;
+	}
+	
 	public boolean hasSurvivantAgentBomberman() {		// CETTE METHODE ME PERMET DE SAVOIR S'IL RESTE UN AGENT BOMBERMAN SUR LE TERRAIN
 		for(Agent a: this.agents) {
 			if(a.getType() == 'B') return true;
@@ -286,11 +342,17 @@ public class BombermanGame extends Game {
 			InfoAgent infoAgent = new InfoAgent(agent.getX(), agent.getY(), action, agent.getType(), agent.getColor(), agent.isInvincible(), agent.isSick());
 			this.infoAgents.add(infoAgent);
 			agent.deleteExplosedBombe();
+			
+			if(agent.isInvincible() || agent.isSick()) {
+				agent.applyEffetOfInvincibilityAndSick();
+			}
 		}
 		
 		for(InfoBomb bombe: this.bombes) {
 			bombe.declencheMinuteurOfBombe();
 		}
+
+		this.deleteItem(this.eatItem());
 	}
 
 	@Override
