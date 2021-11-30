@@ -29,6 +29,11 @@ public abstract class AbstractController {
 	public void setInputMap(InputMap newMap) {
 		getGame().setInputMap(newMap);
 	}
+	
+	public void changeMapOfGaming(String fileName) {
+		// ASTUCE : METHODE A REDEFINIR POUR LA GESTION DU CHARGEMENT D'UN NOUVEAU TERRAIN DE JEU (PARTIE 5.2)
+		System.out.println("Ouverture du terrain de jeu : " + fileName);
+	}
 
 	public Game getGame() {
 		return game;

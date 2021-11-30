@@ -25,12 +25,12 @@ public class ViewSimpleGame implements Observer {
 		/*---		JFRAME		---*/
 		jFrame = new JFrame();
 		jFrame.setTitle("Game");
-		jFrame.setSize(new Dimension(700, 700));
+		jFrame.setSize(new Dimension(500, 300));
 		Dimension windowSize = jFrame.getSize();
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Point centerPoint = ge.getCenterPoint();
-		int dx = centerPoint.x - windowSize.width / 2 - 350;
-		int dy = centerPoint.y - windowSize.height / 2 - 100;
+		int dx = centerPoint.x - windowSize.width / 2 + 450;
+		int dy = centerPoint.y - windowSize.height / 2 + 80;
 
 		/*---		AFFICHAGE NOMBRE TOUR		---*/
 		String msg = "Turn : " + this.controller.getGame().getMaxturn();

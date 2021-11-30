@@ -20,21 +20,21 @@ public class ViewBombermanGame implements Observer {
 		/*---		JFRAME		---*/
 		jFrame = new JFrame();
 		jFrame.setTitle("Game");
-		jFrame.setSize(new Dimension(950, 700));
+		jFrame.setSize(new Dimension(950, 600));
 		Dimension windowSize = jFrame.getSize();
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Point centerPoint = ge.getCenterPoint();
 		int dx = centerPoint.x - windowSize.width / 2 - 500;
-		int dy = centerPoint.y - windowSize.height / 2 - 100;
+		int dy = centerPoint.y - windowSize.height / 2 - 150;
 		jFrame.setLocation(dx,dy);
 
-		this.panelBomberman = new PanelBomberman(this.getController().getGame().getInputMap().getSizeX(), this.getController().getGame().getInputMap().getSizeY(), this.getController().getGame().getInputMap().get_walls(), this.controller.getBombermanGame().getInfoMurs(), this.controller.getBombermanGame().getInfoAgents());
+		this.panelBomberman = new PanelBomberman(this.getController().getGame().getInputMap().getSizeX(), this.getController().getGame().getInputMap().getSizeY(), this.getController().getGame().getInputMap().get_walls(), this.controller.getGame().getInfoMurs(), this.controller.getGame().getInfoAgents());
 		this.addPanel(panelBomberman);
 	}
 
 	@Override
 	public void update(int nombreTour) {
-		this.panelBomberman.updateInfoGame(this.controller.getBombermanGame().getInfoMurs(), this.controller.getBombermanGame().getInfoAgents(), this.controller.getBombermanGame().getInfoItems(), this.controller.getBombermanGame().getBombes());
+		this.panelBomberman.updateInfoGame(this.controller.getGame().getInfoMurs(), this.controller.getGame().getInfoAgents(), this.controller.getGame().getInfoItems(), this.controller.getGame().getBombes());
 		this.panelBomberman.repaint();
 	}
 	

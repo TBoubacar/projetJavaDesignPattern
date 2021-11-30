@@ -8,7 +8,7 @@ public class EtatRestart implements EtatButtonCommande {
 	public EtatRestart (ViewCommand viewCommand) {
 		this.viewCommand = viewCommand;
 
-		System.out.println("Rédemarrage du jeu...");
+		System.out.println("\n*****************\nRédemarrage du jeu\n*****************");
 		this.viewCommand.getjButtonRestart().setEnabled(false);
 		this.viewCommand.getjButtonPause().setEnabled(false);
 		this.viewCommand.getjButtonStart().setEnabled(true);

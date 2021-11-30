@@ -18,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 
 import controller.AbstractController;
-import controller.ControllerBombermanGame;
 import etat.EtatBase;
 import etat.EtatButtonCommande;
 import etat.EtatFin;
@@ -34,14 +33,14 @@ public class ViewCommand implements Observer {
 	JButton jButtonPause;				//MON BOUTON PAUSE
 	JLabel jLabelSlider;
 	JLabel jLabel;
-	ControllerBombermanGame controller;
+	private AbstractController controller;
 	private EtatButtonCommande etat;
 	
 	// PARTIE BONUS
 	JButton jButtonChooseInterface;		//MON BOUTON POUR CHOISIR UN PLATEAU DU JEU
 
 	public ViewCommand(AbstractController controllerGame) {
-		this.controller = (ControllerBombermanGame) controllerGame;
+		this.controller = controllerGame;
 
 		this.createFrame();
 		
@@ -73,12 +72,12 @@ public class ViewCommand implements Observer {
 		/*---		JFRAME		---*/
 		jFrame = new JFrame();
 		jFrame.setTitle("Commande");
-		jFrame.setSize(new Dimension(700, 400));
+		jFrame.setSize(new Dimension(600, 300));
 		Dimension windowSize = jFrame.getSize();
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Point centerPoint = ge.getCenterPoint();
 		int dx = centerPoint.x - windowSize.width / 2 + 350 ;
-		int dy = centerPoint.y - windowSize.height / 2 - 450;
+		int dy = centerPoint.y - windowSize.height / 2 - 300;
 		jFrame.setLocation(dx,dy);
 	}
 	
@@ -134,7 +133,6 @@ public class ViewCommand implements Observer {
 						controller.setInputMap(new InputMap(fileName));
 						controller.changeMapOfGaming(fileName);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -190,10 +188,10 @@ public class ViewCommand implements Observer {
 		jPanelMain2.add(jPanel3);
 		jPanelMain1.add(jPanelMain2);
 
-		jFrame.add(jPanelMain1);		
+		this.addPanel(jPanelMain1);
 	}
 
-	public void changePanel(JPanel panel) {
+	public void addPanel(JPanel panel) {
 		this.jFrame.add(panel);
 	}
 	
@@ -210,7 +208,7 @@ public class ViewCommand implements Observer {
 	}
 
 	public void setController(AbstractController controller) {
-		this.controller = (ControllerBombermanGame) controller;
+		this.controller = controller;
 	}
 
 	public JFrame getjFrame() {

@@ -1,6 +1,5 @@
 package controller;
 
-import model.Game;
 import model.SimpleGame;
 import view.ViewCommand;
 import view.ViewSimpleGame;
@@ -18,10 +17,14 @@ public class ControllerSimpleGame extends AbstractController{
 	//		ET GAGNER PLUS DE TEMPS POUR LA FINITION DU RESTE DE MON PROJET (^_^)
 	//______N.B.	ON SUPPOSERA QUE NOTRE JEU N'AURA PLUS D'AUTRES VUES À IMPLEMENTER.
 	
-	public ControllerSimpleGame(Game game) {
-		super.setGame(new SimpleGame(game.getMaxturn()));
+	public ControllerSimpleGame(int tourMax) {
+		super.setGame(new SimpleGame(tourMax));
 		this.viewSimpleGame = new ViewSimpleGame(this);
 		this.viewCommand = new ViewCommand(this);
+
+		super.getGame().addObserver(this.viewSimpleGame);
+		super.getGame().addObserver(this.viewCommand);
+		this.showGame();
 	}
 
 	public void showGame() {
@@ -48,5 +51,13 @@ public class ControllerSimpleGame extends AbstractController{
 
 	public void setViewCommand(ViewCommand viewCommand) {
 		this.viewCommand = viewCommand;
+	}
+	
+	public SimpleGame getGame() {
+		return (SimpleGame) super.getGame();
+	}
+	
+	public void setGame(SimpleGame game) {
+		super.setGame(game);
 	}
 }

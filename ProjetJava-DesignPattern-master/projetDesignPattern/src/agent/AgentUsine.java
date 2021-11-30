@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
-import utils.ColorAgent;
+import utils.InfoAgent;
 
 public class AgentUsine {
 	//	ON UTILISE LE PRINCIPE DU DESIGN PATTERN SINGLETON ICI POUR S'ASSURER QU'IL N'EXISTE QU'UNE SEULE USINE DE CREATION D'AGENTS DANS NOTRE JEU
@@ -39,26 +39,26 @@ public class AgentUsine {
 		return cles;
 	}
 	
-	public Agent createAgent(char type, ColorAgent color, int x, int y) {
+	public Agent createAgent(InfoAgent agent) {
 		// IL N'Y A PAS D'INQUIÉTUDE À CE FAIRE POUR LES DOUBLONS, CAR UN HASTABLE PERMET DE 
 		// REPÉRER LES DOUBLONS ET DONC NE L'INSERT PAS EN TANT QUE NOUVELLE DONNÉE.
-//		if(!this.getTypes().contains(type)) {
-			switch (type) {
+		if(!this.getTypes().contains(agent.getType()) || agent.getType() == 'B' ) {
+			switch (agent.getType()) {
 			case 'B':	// SEUL LES AGENTS BOMBERMAN SERONT EN COULEUR MALGRÉ TOUT
-				this.factories.put(type, new AgentBombermanFactory(color));
+				this.factories.put(agent.getType(), new AgentBombermanFactory(agent.getColor()));
 				break;
 			case 'R':
-				this.factories.put(type, new AgentRajionFactory());
+				this.factories.put(agent.getType(), new AgentRajionFactory());
 				break;
 			case 'V':
-				this.factories.put(type, new AgentBirdFactory());
+				this.factories.put(agent.getType(), new AgentBirdFactory());
 				break;
 			default:
-				this.factories.put(type, new AgentEnnemiFactory());
+				this.factories.put(agent.getType(), new AgentEnnemiFactory());
 				break;
 			}	
-//		}
-		return this.factories.get(type).createAgent(x, y);
+		}
+		return this.factories.get(agent.getType()).createAgent(agent.getX(), agent.getY());
 	}
 
 	/*---		GETTERS AND SETTERS		---*/

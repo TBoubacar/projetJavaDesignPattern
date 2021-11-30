@@ -42,11 +42,6 @@ public abstract class Game implements Runnable, Observable {
 	public void changeGameSpace(String filename) {
 		try {
 			this.inputMap = new InputMap(filename);
-//			this.inputMap = new InputMap("layouts/alone.lay");
-//			this.inputMap = new InputMap("layouts/niveau1.lay");
-//			this.inputMap = new InputMap("layouts/niveau3.lay");
-//			this.inputMap = new InputMap("layouts/arene.lay");
-//			this.inputMap = new InputMap("layouts/jeu1.lay");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -146,7 +141,7 @@ public abstract class Game implements Runnable, Observable {
 	}
 
 	public void setTime(long time) {
-		this.time = time;	//PARCE QUE ON EST EN MILLISECONDE
+		this.time = time;
 	}
 	
 	public InputMap getInputMap() {

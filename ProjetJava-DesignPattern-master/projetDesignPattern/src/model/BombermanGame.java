@@ -26,8 +26,8 @@ public class BombermanGame extends Game {
 
 	private ArrayList<Agent> agents;			// CECI CORRESPOND À L'ENSEMBLE DES AGENTS CRÉÉS DANS NOTRE USINE
 	private ArrayList<Item> items;				// CECI CORRESPOND À L'ENSEMBLE DES AGENTS CRÉÉS DANS NOTRE USINE
-	private ArrayList<InfoBomb> bombes;			// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS SUR LES BOMBES SUR NOTRE TERRAIN DE JEU
 
+	private ArrayList<InfoBomb> bombes;			// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS SUR LES BOMBES SUR NOTRE TERRAIN DE JEU
 	private ArrayList<InfoAgent> infoAgents;	// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS SUR LES AGENTS SUR NOTRE TERRAIN DE JEU
 	private ArrayList<InfoItem> infoItems;		// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS SUR LES ITEMS SUR NOTRE TERRAIN DE JEU
 	private boolean[][] infoMurs;				// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS SUR LES MÛRS BRISABLE SUR NOTRE TERRAIN DE JEU
@@ -52,7 +52,6 @@ public class BombermanGame extends Game {
 		this.initializeGame();
 	}
 
-
 	@Override
 	public void initializeGame() {
 		int i = 0;
@@ -71,13 +70,14 @@ public class BombermanGame extends Game {
 			this.infoAgents.add(a);
 
 		for(InfoAgent agent : this.getInputMap().getStart_agents()) {
-			this.agents.add(this.usineOfAgent.createAgent(agent.getType(), agent.getColor(), agent.getX(), agent.getY()));
+			this.agents.add(this.usineOfAgent.createAgent(agent));
 		}
 		//		System.out.println(this.usineOfAgent);		// VOUS POUVEZ DECOMMENTER CE CODE POUR VOUS ASSURER QUE LA CLASSE HASHTABLE GERE BIEN LE CAS DES DOUBLONS ET EVITE DE LES INSERER
 	}
 
 	public boolean isLegalMove(Agent agent, AgentAction agentAction) {
 		// LE DEPLACEMENT N'EST POSSIBLE QUE SI ON NE SE TROUVERA PAS À LA MÊME POSITION QU'UN MÛR QUELQUE SOIT SON TYPE (BRISABLE OU PAS)
+		// LA CONDITION DU IF N'EST PAS UTILE SI ON FAIT CONFIANCE AUX DONNÉES SAISIES DANS L'API FOURNIT
 		if((agent.getX() >= 1 && agent.getY() >= 1) && (agent.getX() < this.getInputMap().get_walls().length && agent.getY() < this.getInputMap().get_walls()[0].length)) {
 			switch(agentAction) {
 			case MOVE_DOWN:

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import model.StopStrategie;
 import utils.ColorAgent;
-import utils.InfoAgent;
 
 public class AgentBird extends Agent{
 	private int rayonAction;

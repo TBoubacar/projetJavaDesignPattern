@@ -1,19 +1,17 @@
 package utils;
 
 import controller.ControllerBombermanGame;
-import model.BombermanGame;
+import controller.ControllerSimpleGame;
 
 public class Test {
 
 	public static void main(String[] args) {
-		/*
-		SimpleGame simpleGame = new SimpleGame(5);
-		ControllerSimpleGame controllerSimpleGame = new ControllerSimpleGame(simpleGame);
-		controllerSimpleGame.showGame();
-		*/
 		
+//		@SuppressWarnings("unused")
+//		ControllerSimpleGame controllerSimpleGame = new ControllerSimpleGame(50);
+		
+		@SuppressWarnings("unused")
 		ControllerBombermanGame controllerBombermanGame = new ControllerBombermanGame(500);
-		controllerBombermanGame.showGame();
 	}
 
 }

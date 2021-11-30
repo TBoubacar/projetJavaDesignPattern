@@ -7,6 +7,7 @@ public class EtatPause implements EtatButtonCommande {
 
 	public EtatPause (ViewCommand viewCommand) {
 		this.viewCommand = viewCommand;
+		System.out.println("###############\nPause\n###############");
 
 		this.viewCommand.getjButtonRestart().setEnabled(true);
 		this.viewCommand.getjButtonStart().setEnabled(true);

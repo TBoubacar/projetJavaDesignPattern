@@ -1,32 +1,23 @@
 package controller;
 
 import model.BombermanGame;
-import view.PanelBomberman;
 import view.ViewBombermanGame;
 import view.ViewCommand;
 
 public class ControllerBombermanGame extends AbstractController{
-	private BombermanGame bombermanGame;
 	private ViewBombermanGame viewBombermanGame;
 	private ViewCommand viewCommand;
 	
 	public ControllerBombermanGame(int maxTour) {
-//		this.bombermanGame = new BombermanGame(maxTour, "layouts/arene.lay");
-//		this.bombermanGame = new BombermanGame(maxTour, "layouts/alone.lay");
-//		this.bombermanGame = new BombermanGame(maxTour, "layouts/exemple.lay");
-//		this.bombermanGame = new BombermanGame(maxTour, "layouts/jeu1.lay");
-//		this.bombermanGame = new BombermanGame(maxTour, "layouts/jeu_symetrique.lay");
-//		this.bombermanGame = new BombermanGame(maxTour, "layouts/niveau1.lay");
-		this.bombermanGame = new BombermanGame(maxTour, "layouts/niveau2.lay");
-//		this.bombermanGame = new BombermanGame(maxTour, "layouts/niveau3.lay");
-		
-		super.setGame(this.bombermanGame);
+		super.setGame(new BombermanGame(maxTour, "layouts/arene.lay"));
 		
 		this.viewCommand = new ViewCommand(this);
 		this.viewBombermanGame = new ViewBombermanGame(this);
-		
-		super.getGame().addObserver(viewBombermanGame);
-		super.getGame().addObserver(viewCommand);
+
+		super.getGame().addObserver(this.viewBombermanGame);
+		super.getGame().addObserver(this.viewCommand);
+		this.showGame();
+
 	}
 	
 	public void changeMapOfGaming(String fileName) {
@@ -34,8 +25,8 @@ public class ControllerBombermanGame extends AbstractController{
 		this.closeGame();
 		
 		// ON CRÉE UN NOUVEAU JEU ET SES NOUVELLES VUES
-		this.bombermanGame = new BombermanGame(super.getGame().getMaxturn(), fileName);
-		super.setGame(this.bombermanGame);
+		this.setGame(new BombermanGame(super.getGame().getMaxturn(), fileName));
+		super.setGame(this.getGame());
 		this.viewBombermanGame = new ViewBombermanGame(this);
 		this.viewCommand = new ViewCommand(this);
 		
@@ -43,7 +34,7 @@ public class ControllerBombermanGame extends AbstractController{
 		this.showGame();
 		
 		super.getGame().addObserver(this.viewBombermanGame);
-		super.getGame().addObserver(viewCommand);
+		super.getGame().addObserver(this.viewCommand);
 	}
 
 	public void showGame() {
@@ -71,12 +62,12 @@ public class ControllerBombermanGame extends AbstractController{
 	public void setViewCommand(ViewCommand viewCommand) {
 		this.viewCommand = viewCommand;
 	}
-
-	public BombermanGame getBombermanGame() {
-		return bombermanGame;
+	
+	public BombermanGame getGame() {
+		return (BombermanGame) super.getGame();
 	}
-
-	public void setBombermanGame(BombermanGame bombermanGame) {
-		this.bombermanGame = bombermanGame;
+	
+	public void setGame(BombermanGame game) {
+		super.setGame(game);
 	}
 }
