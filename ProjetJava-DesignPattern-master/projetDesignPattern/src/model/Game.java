@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 
+import agent.Agent;
+
 public abstract class Game implements Runnable, Observable {
 	private int turn;
 	private int maxturn;
@@ -21,7 +23,32 @@ public abstract class Game implements Runnable, Observable {
 		this.time = 1000;		//Temps d'arrêt en millisecondes
 		this.mode = 1;
 	}
+	
+	/*--- 		ASTUCE POUR GERER LES PARTIES BONUS POUR LE BOMBERMAN GAME		---*/
+	public boolean hasSurvivantAgentBomberman() {
+		return false;
+	}
+	
+	public boolean hasSurvivantAgentPNJ() {
+		return false;
+	}
 
+	public boolean hasOneSurvivant() {
+		return false;
+	}
+	
+	public int nbAgentBombermanSurvivant() {
+		return 0;
+	}
+	
+	public int nbAgentPNGSurvivant() {
+		return 0;
+	}
+	
+	public Agent getSurvivant() {
+		return null;
+	}
+	
 		/*---	OBSERVABLE METHOHS		---*/
 	@Override
 	public void addObserver(Observer o) {

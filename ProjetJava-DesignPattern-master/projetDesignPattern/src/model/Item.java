@@ -19,7 +19,7 @@ public class Item {
 	// ON A UNE CHANCE SUR 20 DE METTRE UN ITEM
 	public ItemType chooseAleatoireItem() {
 		Random hasard= new Random();
-		switch (hasard.nextInt(10)) {
+		switch (hasard.nextInt(8)) {
 		case 0:
 			setItemType(ItemType.FIRE_SUIT);
 			return getItemType();

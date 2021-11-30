@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
@@ -7,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Color;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -15,8 +17,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import controller.AbstractController;
 import etat.EtatBase;
@@ -33,11 +40,13 @@ public class ViewCommand implements Observer {
 	JButton jButtonPlay;				//MON BOUTON STEP
 	JButton jButtonPause;				//MON BOUTON PAUSE
 	JButton jButtoneExit;				//MON BOUTON EXIT
-	JButton jButtoneChangeMode;				//MON BOUTON CHANGE MODE
+	JButton jButtoneChangeMode;			//MON BOUTON CHANGE MODE
 
 	JLabel jLabelSlider;
 	JLabel jLabel;
 	JLabel jLabel2;
+	JTextArea jTextArea;
+	
 	private AbstractController controller;
 	private EtatButtonCommande etat;
 	
@@ -74,10 +83,51 @@ public class ViewCommand implements Observer {
 			this.controller.setSpeed((double) (1000/this.jSlider.getValue()));
 		}
 		
+
+		String info = "";
+		info += "#################################\n"		;
+		info += "# \tBOMERMAN GAME \n"			;
+		info += "# Le nombre d'agent Bomberman : " + this.controller.getGame().nbAgentBombermanSurvivant() + "\n";
+		info += "# Le nombre d'agent PNJ : " +  this.controller.getGame().nbAgentPNGSurvivant() + "\n"		;
+		info += "# \t-----------INFOS-------------\n"		;
+		info += "# \tLE JEU PEUT COMMENCER : \n"			;
+		
 		// GESTION DE LA FIN DU JEU
 		if(this.controller.getGame().getTurn() == this.controller.getGame().getMaxturn() || !this.controller.getGame().gameContinue()) {
 			this.setEtat(new EtatFin(this));
+			info += "# \t ---FIN DE LA PARTIE--- \n";
+			
+			if(!this.controller.getGame().hasSurvivantAgentBomberman()) {
+				if(this.controller.getGame().getMode() == 1 && this.controller.getGame().getMaxturn() != this.controller.getGame().getTurn() && !this.controller.getGame().hasSurvivantAgentPNJ()) {
+					info += "# Oooh Oooooohhh ! \n# Vos agents bomberman se sont tués (Match null).\n";
+				} else {
+					info += "# Oooh Oooooohhh ! \n# Vos agents bomberman ont été mangé.\n";
+				}
+			} 
+			else if(!this.controller.getGame().hasSurvivantAgentPNJ() && this.controller.getGame().getMode() == 2) {
+				if(this.controller.getGame().getMode() == 1) {
+					info += "# Félicitations ! \n# L'agent bomberman " + this.controller.getGame().getSurvivant().getColor() + " a remporté la partie.\n";
+				} else {
+					info += "# Félicitations ! \n# Vos agents bomberman ont remporté la partie.\n";			
+				}
+			}
+			else if(this.controller.getGame().hasOneSurvivant()) {
+				if(this.controller.getGame().getMode() == 1) {
+					info += "# Félicitations ! \n# L'agent bomberman " + this.controller.getGame().getSurvivant().getColor() + " a remporté la partie.\n";
+				} else {
+					info += "# Félicitations ! \n# Vos agents bomberman ont remporté la partie.\n";			
+				}
+			} else {
+				if(this.controller.getGame().getMode() == 1 && !this.controller.getGame().hasSurvivantAgentPNJ()) {
+					info += "# Ouuppss ! \n# Il y a match null entre les agents bomberman.\n";
+				} else {
+					info += "# Ouuppss ! \n# Il y a match null entre les bomberman ainsi que les agents PNG.\n";
+				}
+			}
 		}
+
+		info += "#################################"			;
+		this.jTextArea.setText(info);
 	}
 	
 	/*---		METHODS CONCRETE		---*/
@@ -85,13 +135,18 @@ public class ViewCommand implements Observer {
 		/*---		JFRAME		---*/
 		jFrame = new JFrame();
 		jFrame.setTitle("Commande");
-		jFrame.setSize(new Dimension(600, 400));
+		jFrame.setSize(new Dimension(700, 500));
 		Dimension windowSize = jFrame.getSize();
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Point centerPoint = ge.getCenterPoint();
 		int dx = centerPoint.x - windowSize.width / 2 + 350 ;
 		int dy = centerPoint.y - windowSize.height / 2 - 300;
 		jFrame.setLocation(dx,dy);
+		try {
+			UIManager.setLookAndFeel( new NimbusLookAndFeel() );
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void createButton() {
@@ -108,7 +163,7 @@ public class ViewCommand implements Observer {
 		jButtonPause = new JButton(pauseIcon);
 		// PARTIE BONUS
 		jButtoneExit = new JButton(exitIcon);
-		jButtonChooseInterface = new JButton("Choose Interface of gaming");
+		jButtonChooseInterface = new JButton("Change game card");
 		jButtoneChangeMode = new JButton("Change mode");
 		
 		//DE BASE TOUS LES BOUTONS SONT DESACTIVÉS SAUF LE BOUTON QUI LANCE LA PERMET DE LANCER LA PARTIE
@@ -196,38 +251,67 @@ public class ViewCommand implements Observer {
 		
 		jLabel.setFont(new Font("Serif", Font.BOLD, 14));
 		jLabel2.setFont(new Font("Serif", Font.BOLD, 14));
+		
+		jTextArea = new JTextArea(10, 40);
+		jTextArea.setPreferredSize( new Dimension(12,30) );
+		jTextArea.setAlignmentX(Component.CENTER_ALIGNMENT);
+		jTextArea.setForeground(Color.WHITE);
+		jTextArea.setBackground(Color.BLACK);
+		
+		String info = "";
+		info += "#################################\n"		;
+		info += "# \tBOMERMAN GAME \n"			;
+		info += "# Le nombre d'agent Bomberman : " + this.controller.getGame().nbAgentBombermanSurvivant() + "\n";
+		info += "# Le nombre d'agent PNJ : " +  this.controller.getGame().nbAgentPNGSurvivant() + "\n"		;
+		info += "# \t-----------INFOS-------------\n"		;
+		info += "# \tLE JEU PEUT COMMENCER : \n"			;
+		info += "# \t Bonne (^_^) chance \n"				;
+		info += "#################################"			;
+		this.jTextArea.setText(info);
 	}
 	
 	public void ajoutePanelOnJFrame() {
 		/*---		JPANEL		---*/
-		JPanel jPanelBouton = new JPanel(new GridLayout(1, 5));
+		JPanel jPanelBouton = new JPanel(new GridLayout(1, 4));
 		jPanelBouton.add(jButtonRestart);
 		jPanelBouton.add(jButtonStart);
 		jPanelBouton.add(jButtonPlay);
 		jPanelBouton.add(jButtonPause);
-		jPanelBouton.add(jButtoneExit);
 		
 		JPanel jPanel2 = new JPanel(new GridLayout(2,1));
 		jPanel2.add(jLabelSlider);
 		jPanel2.add(jSlider);
 		
-		JPanel jPanel3 = new JPanel(new GridLayout(3,1));
-		jPanel3.add(jButtoneChangeMode);
+		JPanel jPanel3 = new JPanel(new GridLayout(2,1));
 		jPanel3.add(jLabel2);
 		jPanel3.add(jLabel);
 		
-		JPanel jPanelMain1 = new JPanel(new GridLayout(3, 1));
-		JPanel jPanelMain2 = new JPanel(new GridLayout(1, 2));
-		
-		jPanelMain1.add(jPanelBouton);
-		
+				
 		// BONUS
-		JPanel panelChooseInterfaceButton = new JPanel();
-		panelChooseInterfaceButton.add(jButtonChooseInterface);
-		jPanelMain1.add(panelChooseInterfaceButton);
+		JScrollPane jScrollPane = new JScrollPane(this.jTextArea);
 		
+		JPanel jPanelGridOfScrollable = new JPanel(new GridLayout(2, 1));
+		JPanel jPanelExit = new JPanel(new GridLayout(1, 1));
+		jPanelExit.add(jButtoneExit);
+		jPanelGridOfScrollable.add(jPanelExit);
+		
+		JPanel jPanelBTNBonus = new JPanel(new GridLayout(1, 2));
+		jPanelBTNBonus.add(jButtoneChangeMode);
+		jPanelBTNBonus.add(jButtonChooseInterface);
+		
+		jPanelGridOfScrollable.add(jPanelBTNBonus);
+
+		JPanel jpanelScrollable = new JPanel(new GridLayout(1, 2));		
+		jpanelScrollable.add(jScrollPane);
+		jpanelScrollable.add(jPanelGridOfScrollable);
+
+		JPanel jPanelMain2 = new JPanel(new GridLayout(1, 2));
 		jPanelMain2.add(jPanel2);
 		jPanelMain2.add(jPanel3);
+		
+		JPanel jPanelMain1 = new JPanel(new GridLayout(3, 1));
+		jPanelMain1.add(jPanelBouton);
+		jPanelMain1.add(jpanelScrollable);
 		jPanelMain1.add(jPanelMain2);
 
 		this.addPanel(jPanelMain1);
@@ -356,5 +440,13 @@ public class ViewCommand implements Observer {
 
 	public void setjButtoneExit(JButton jButtoneExit) {
 		this.jButtoneExit = jButtoneExit;
+	}
+
+	public JTextArea getjTextArea() {
+		return jTextArea;
+	}
+
+	public void setjTextArea(JTextArea jTextArea) {
+		this.jTextArea = jTextArea;
 	}
 }

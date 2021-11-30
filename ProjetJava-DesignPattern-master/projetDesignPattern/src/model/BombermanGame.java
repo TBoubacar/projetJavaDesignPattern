@@ -340,7 +340,11 @@ public class BombermanGame extends Game {
 
 		this.deleteItem(this.eatItem());
 	}
-
+	
+	public Agent getSurvivant() {
+		return this.agents.get(0);
+	}
+	
 	@Override
 	public boolean gameContinue() {
 		return !this.finish;
@@ -349,7 +353,12 @@ public class BombermanGame extends Game {
 	@Override
 	public void gameOver() {
 		this.bombes.clear();
-		String msg = "Oooh Oooooohhh ! Vos agents bomberman ont été mangé. \nPartie Terminé (^_^)";
+		String msg = "";
+		if(this.getMode() == 1 && this.getMaxturn() != this.getTurn() && !this.hasSurvivantAgentPNJ()) {
+			msg = "Oooh Oooooohhh ! Vos agents bomberman se sont tués (Match null). \nPartie Terminé (^_^)";			
+		} else {
+			msg = "Oooh Oooooohhh ! Vos agents bomberman ont été mangé. \nPartie Terminé (^_^)";
+		}
 		System.out.println(msg);
 		this.finish = true;
 		this.setRunning(false);
@@ -360,7 +369,7 @@ public class BombermanGame extends Game {
 		this.bombes.clear();
 		String msg = "";
 		if(this.getMode() == 1) {
-			msg = "Félicitations ! l'agent bomberman " + this.agents.get(0).getColor() + " a remporté la partie. \nPartie Terminé (^_^)";
+			msg = "Félicitations ! l'agent bomberman " + this.getSurvivant().getColor() + " a remporté la partie. \nPartie Terminé (^_^)";
 		} else {
 			msg = "Félicitations ! vos agents bomberman ont remporté la partie. \nPartie Terminé (^_^)";			
 		}
@@ -416,6 +425,20 @@ public class BombermanGame extends Game {
 		} else {
 			// Je ne fais rien
 		}
+	}
+	
+	public int nbAgentBombermanSurvivant() {
+		int i = 0;
+		for(Agent a: this.agents) {
+			if(a.getType() == 'B') i++;
+		} return i;
+	}
+	
+	public int nbAgentPNGSurvivant() {
+		int i = 0;
+		for(Agent a: this.agents) {
+			if(a.getType() != 'B') i++;
+		} return i;
 	}
 	
 	/*---		GETTERS AND SETTERS		---*/
