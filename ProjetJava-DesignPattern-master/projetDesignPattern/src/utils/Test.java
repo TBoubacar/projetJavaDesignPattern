@@ -12,7 +12,7 @@ public class Test {
 		controllerSimpleGame.showGame();
 		*/
 		
-		ControllerBombermanGame controllerBombermanGame = new ControllerBombermanGame(200);
+		ControllerBombermanGame controllerBombermanGame = new ControllerBombermanGame(500);
 		controllerBombermanGame.showGame();
 	}
 

@@ -129,11 +129,6 @@ public class ViewCommand implements Observer {
 				JFileChooser jFileChooser = new JFileChooser("layouts/");
 				jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				if(jFileChooser.showOpenDialog(jFrame) == JFileChooser.APPROVE_OPTION) {
-					getjButtonRestart().setEnabled(true);
-					getjButtonStart().setEnabled(false);
-					getjButtonPlay().setEnabled(false);
-					getjButtonPause().setEnabled(false);
-
 					try {
 						String fileName = jFileChooser.getSelectedFile().getAbsolutePath();
 						controller.setInputMap(new InputMap(fileName));

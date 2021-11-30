@@ -30,7 +30,20 @@ public class ControllerBombermanGame extends AbstractController{
 	}
 	
 	public void changeMapOfGaming(String fileName) {
-		this.viewBombermanGame.setPanelBomberman(new PanelBomberman(this.getGame().getInputMap().getSizeX(), this.getGame().getInputMap().getSizeY(), this.getGame().getInputMap().get_walls(), this.getBombermanGame().getInfoMurs(), this.getBombermanGame().getInfoAgents()));
+		// ON FERME LES ANCIENNES VUES
+		this.closeGame();
+		
+		// ON CRÉE UN NOUVEAU JEU ET SES NOUVELLES VUES
+		this.bombermanGame = new BombermanGame(super.getGame().getMaxturn(), fileName);
+		super.setGame(this.bombermanGame);
+		this.viewBombermanGame = new ViewBombermanGame(this);
+		this.viewCommand = new ViewCommand(this);
+		
+		// ON AFFICHE LES NOUVELLES VUES
+		this.showGame();
+		
+		super.getGame().addObserver(this.viewBombermanGame);
+		super.getGame().addObserver(viewCommand);
 	}
 
 	public void showGame() {
