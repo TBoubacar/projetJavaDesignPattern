@@ -9,7 +9,7 @@ public class Test {
 		
 //		@SuppressWarnings("unused")
 //		ControllerSimpleGame controllerSimpleGame = new ControllerSimpleGame(50);
-		
+
 		@SuppressWarnings("unused")
 		ControllerBombermanGame controllerBombermanGame = new ControllerBombermanGame(500);
 	}

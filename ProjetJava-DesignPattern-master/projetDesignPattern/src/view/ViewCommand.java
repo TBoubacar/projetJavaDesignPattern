@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.WindowConstants;
 
 import controller.AbstractController;
 import etat.EtatBase;
@@ -31,8 +32,12 @@ public class ViewCommand implements Observer {
 	JButton jButtonStart;				//MON BOUTON RUN (JOUER AUTOMATIQUEMENT)
 	JButton jButtonPlay;				//MON BOUTON STEP
 	JButton jButtonPause;				//MON BOUTON PAUSE
+	JButton jButtoneExit;				//MON BOUTON EXIT
+	JButton jButtoneChangeMode;				//MON BOUTON CHANGE MODE
+
 	JLabel jLabelSlider;
 	JLabel jLabel;
+	JLabel jLabel2;
 	private AbstractController controller;
 	private EtatButtonCommande etat;
 	
@@ -48,6 +53,8 @@ public class ViewCommand implements Observer {
 		
 		this.createSlider();
 		
+		this.createLabel();
+		
 		this.ajoutePanelOnJFrame();
 	}
 
@@ -55,6 +62,12 @@ public class ViewCommand implements Observer {
 	@Override
 	public void update(int nombreTour) {
 		this.jLabel.setText("Turn : " + nombreTour);
+		
+		if(this.controller.getGame().getMode() == 1) {
+			this.jLabel2.setText("Mode du jeu : NON COOPÉRATIF");
+		} else {
+			this.jLabel2.setText("Mode du jeu : COOPÉRATIF");			
+		}
 
 		// GESTION DE LA VITESSE DU JEU
 		if(this.jSlider.getValue() > 0) {
@@ -72,7 +85,7 @@ public class ViewCommand implements Observer {
 		/*---		JFRAME		---*/
 		jFrame = new JFrame();
 		jFrame.setTitle("Commande");
-		jFrame.setSize(new Dimension(600, 300));
+		jFrame.setSize(new Dimension(600, 400));
 		Dimension windowSize = jFrame.getSize();
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Point centerPoint = ge.getCenterPoint();
@@ -87,14 +100,17 @@ public class ViewCommand implements Observer {
 		Icon startIcon= new ImageIcon("icons/icon_play.png");
 		Icon playIcon= new ImageIcon("icons/icon_step.png");
 		Icon pauseIcon= new ImageIcon("icons/icon_pause.png");
+		Icon exitIcon= new ImageIcon("icons/icon_exit.png");
 		
 		jButtonRestart = new JButton(restartIcon);
 		jButtonStart= new JButton(startIcon);
 		jButtonPlay = new JButton(playIcon);
 		jButtonPause = new JButton(pauseIcon);
 		// PARTIE BONUS
+		jButtoneExit = new JButton(exitIcon);
 		jButtonChooseInterface = new JButton("Choose Interface of gaming");
-
+		jButtoneChangeMode = new JButton("Change mode");
+		
 		//DE BASE TOUS LES BOUTONS SONT DESACTIVÉS SAUF LE BOUTON QUI LANCE LA PERMET DE LANCER LA PARTIE
 		this.etat = new EtatBase(this);
 		
@@ -119,6 +135,18 @@ public class ViewCommand implements Observer {
 		jButtonPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evenement) {
 				etat.pause();
+			}
+		});
+
+		jButtoneExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evenement) {
+				controller.closeGame();
+			}
+		});
+
+		jButtoneChangeMode.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evenement) {
+				controller.getGame().setMode((controller.getGame().getMode() % 2) + 1);
 			}
 		});
 
@@ -152,26 +180,40 @@ public class ViewCommand implements Observer {
 		
 		jLabelSlider = new JLabel("Number of turns par second", JLabel.CENTER);
 		jLabelSlider.setFont(new Font("Serif", Font.BOLD, 14));
-		
+	}
+	
+	public void createLabel() {
 		/*---		AFFICHAGE NOMBRE TOUR		---*/
 		String msg = "Turn : " + this.controller.getGame().getMaxturn();
+		String msg2 = "";
+		if(this.controller.getGame().getMode() == 1) {
+			msg2 = "Mode du jeu : NON COOPÉRATIF";
+		} else {
+			msg2 = "Mode du jeu : COOPÉRATIF";			
+		}
 		jLabel = new JLabel(msg, JLabel.CENTER);
+		jLabel2 = new JLabel(msg2, JLabel.CENTER);
+		
 		jLabel.setFont(new Font("Serif", Font.BOLD, 14));
+		jLabel2.setFont(new Font("Serif", Font.BOLD, 14));
 	}
 	
 	public void ajoutePanelOnJFrame() {
 		/*---		JPANEL		---*/
-		JPanel jPanelBouton = new JPanel(new GridLayout(1, 4));
+		JPanel jPanelBouton = new JPanel(new GridLayout(1, 5));
 		jPanelBouton.add(jButtonRestart);
 		jPanelBouton.add(jButtonStart);
 		jPanelBouton.add(jButtonPlay);
 		jPanelBouton.add(jButtonPause);
+		jPanelBouton.add(jButtoneExit);
 		
 		JPanel jPanel2 = new JPanel(new GridLayout(2,1));
 		jPanel2.add(jLabelSlider);
 		jPanel2.add(jSlider);
 		
-		JPanel jPanel3 = new JPanel(new GridLayout(1,2));
+		JPanel jPanel3 = new JPanel(new GridLayout(3,1));
+		jPanel3.add(jButtoneChangeMode);
+		jPanel3.add(jLabel2);
 		jPanel3.add(jLabel);
 		
 		JPanel jPanelMain1 = new JPanel(new GridLayout(3, 1));
@@ -189,6 +231,23 @@ public class ViewCommand implements Observer {
 		jPanelMain1.add(jPanelMain2);
 
 		this.addPanel(jPanelMain1);
+		jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+	}
+
+	public JButton getjButtoneChangeMode() {
+		return jButtoneChangeMode;
+	}
+
+	public void setjButtoneChangeMode(JButton jButtoneChangeMode) {
+		this.jButtoneChangeMode = jButtoneChangeMode;
+	}
+
+	public JLabel getjLabel2() {
+		return jLabel2;
+	}
+
+	public void setjLabel2(JLabel jLabel2) {
+		this.jLabel2 = jLabel2;
 	}
 
 	public void addPanel(JPanel panel) {
@@ -200,7 +259,7 @@ public class ViewCommand implements Observer {
 	}
 
 	public void close() {
-		jFrame.setVisible(false);
+		jFrame.dispose();
 	}
 
 	public AbstractController getController() {
@@ -289,5 +348,13 @@ public class ViewCommand implements Observer {
 
 	public void setjButtonChooseInterface(JButton jButtonChooseInterface) {
 		this.jButtonChooseInterface = jButtonChooseInterface;
+	}
+
+	public JButton getjButtoneExit() {
+		return jButtoneExit;
+	}
+
+	public void setjButtoneExit(JButton jButtoneExit) {
+		this.jButtoneExit = jButtoneExit;
 	}
 }

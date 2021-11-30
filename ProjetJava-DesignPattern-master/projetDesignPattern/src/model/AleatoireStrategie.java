@@ -8,7 +8,7 @@ public class AleatoireStrategie implements MoveStrategie{
 
 	@Override
 	public AgentAction deplace() {
-		Random hasard= new Random(System.currentTimeMillis());
+		Random hasard= new Random();
 		switch(hasard.nextInt(5)) {
 		case 0: return AgentAction.MOVE_UP;
 		case 1: return AgentAction.MOVE_DOWN;

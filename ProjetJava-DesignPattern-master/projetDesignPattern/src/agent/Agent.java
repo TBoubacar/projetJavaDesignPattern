@@ -40,23 +40,11 @@ public abstract class Agent {
 	}
 	
 	/*-----------	METHODES	----------*/
-	public void move(AgentAction action) {
-		switch (action) {
-		case MOVE_DOWN:
-			this.setY(this.getY() + 1);
-			break;
-		case MOVE_UP:
-			this.setY(this.getY() - 1);
-			break;
-		case MOVE_LEFT:
-			this.setX(this.getX() - 1);
-			break;
-		case MOVE_RIGHT:
-			this.setX(this.getX() + 1);
-			break;
-		default:	//LE CAS OU ON EST STOPÉ
-		}
+	public final void moving(AgentAction action, ArrayList<Agent> agents) {
+		this.move(action, agents);
 	}
+	
+	public abstract void move(AgentAction action, ArrayList<Agent> agents);
 	
 	public void deleteExplosedBombe() {
 		Iterator<InfoBomb> iter = this.bombes.iterator();
@@ -76,9 +64,7 @@ public abstract class Agent {
 			}
 			break;
 		case FIRE_UP:
-			if(this.getBOMBE_RANGE() > 1) {
-				this.setBOMBE_RANGE(this.getBOMBE_RANGE()+1);
-			}
+			this.setBOMBE_RANGE(this.getBOMBE_RANGE()+1);
 			break;
 		case FIRE_SUIT:
 			this.setInvincible(true);

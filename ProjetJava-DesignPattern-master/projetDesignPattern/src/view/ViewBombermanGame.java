@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 import controller.ControllerBombermanGame;
 import model.Observer;
@@ -30,6 +31,7 @@ public class ViewBombermanGame implements Observer {
 
 		this.panelBomberman = new PanelBomberman(this.getController().getGame().getInputMap().getSizeX(), this.getController().getGame().getInputMap().getSizeY(), this.getController().getGame().getInputMap().get_walls(), this.controller.getGame().getInfoMurs(), this.controller.getGame().getInfoAgents());
 		this.addPanel(panelBomberman);
+		jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 
 	@Override
@@ -47,7 +49,7 @@ public class ViewBombermanGame implements Observer {
 	}
 	
 	public void close() {
-		jFrame.setVisible(false);
+		jFrame.dispose();
 	}
 	
 	public JFrame getjFrame() {

@@ -1,6 +1,5 @@
-/model/
-/utils/
-/agent/
 /view/
-/controller/
 /etat/
+/model/
+/agent/
+/utils/

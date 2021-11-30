@@ -13,6 +13,7 @@ public class EtatRestart implements EtatButtonCommande {
 		this.viewCommand.getjButtonPause().setEnabled(false);
 		this.viewCommand.getjButtonStart().setEnabled(true);
 		this.viewCommand.getjButtonPlay().setEnabled(true);
+		this.viewCommand.getjButtoneChangeMode().setEnabled(true);
 		this.viewCommand.getjButtonChooseInterface().setEnabled(true);
 	}
 	

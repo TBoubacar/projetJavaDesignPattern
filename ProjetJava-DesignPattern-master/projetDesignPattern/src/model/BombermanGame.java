@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Random;
 
 import agent.Agent;
-import agent.AgentBird;
 import agent.AgentUsine;
 import utils.AgentAction;
 import utils.InfoAgent;
@@ -32,6 +31,7 @@ public class BombermanGame extends Game {
 	private ArrayList<InfoItem> infoItems;		// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS SUR LES ITEMS SUR NOTRE TERRAIN DE JEU
 	private boolean[][] infoMurs;				// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS SUR LES MÛRS BRISABLE SUR NOTRE TERRAIN DE JEU
 
+	
 	public BombermanGame(int tourMax, String filename) {
 		super(tourMax);
 		this.finish = false;
@@ -48,7 +48,7 @@ public class BombermanGame extends Game {
 		}
 		this.infoAgents = new ArrayList<InfoAgent>();
 		this.setInfoItems(new ArrayList<InfoItem>());
-
+		
 		this.initializeGame();
 	}
 
@@ -111,18 +111,7 @@ public class BombermanGame extends Game {
 
 	public void moveAgent(Agent agent, AgentAction action) {
 		if(isLegalMove(agent, action)) {
-			if(agent.getType() == 'V' && agent.isSleep()) {
-				AgentBird bird = (AgentBird) agent;
-				if(bird.agentBirdRadar(this.agents)) {
-					System.out.println("Agent Bird (" + agent.getX() +", " + agent.getY() + ") a répéré un agent bomberman a {" + bird.getRayonAction() + "} mètres de lui !");
-					agent.setSleep(false);
-					agent.setMoveStrategie(new AleatoireStrategie());
-					agent.move(action);
-				}	// L'AGENT BIRD NE BOUGE QUE S'IL REPÈRE UN BOMBERMAN DANS UN RAYON DE bird.getRayonAction() MÈTRES
-			}
-			else {
-				agent.move(action);
-			}
+			agent.move(action, this.agents);
 		}
 	}
 
@@ -281,7 +270,7 @@ public class BombermanGame extends Game {
 			Iterator<Item> iter = this.items.iterator();
 			Iterator<InfoItem> iter2 = this.infoItems.iterator();
 			
-			while(iter.hasNext()) {		// ON SUPPRIME L'ITEM 
+			while(iter.hasNext()) {				// ON SUPPRIME L'ITEM 
 				Item item = iter.next();
 				if(item == cetItem) {
 					iter.remove();
@@ -310,30 +299,17 @@ public class BombermanGame extends Game {
 		}
 		return null;
 	}
-	
-	public boolean hasSurvivantAgentBomberman() {		// CETTE METHODE ME PERMET DE SAVOIR S'IL RESTE UN AGENT BOMBERMAN SUR LE TERRAIN
-		for(Agent a: this.agents) {
-			if(a.getType() == 'B') return true;
-		} return false;
-	}
-
-	public boolean hasSurvivantAgentPNJ() {				// CETTE METHODE ME PERMET DE SAVOIR S'IL RESTE UN AGENT PNJ SUR LE TERRAIN
-		for(Agent a: this.agents) {
-			if(a.getType() != 'B') return true;
-		} return false;
-	}
-
-	public boolean hasOneSurvivant() {					// CETTE METHODE ME PERMET DE SAVOIR S'IL RESTE UN ET UN SEUL AGENT BOMBERMAN SUR LE TERRAIN (DANS LE CAS OÙ TOUS LES AGENTS SONT ENEMIS)
-		return this.agents.size() <= 1 && this.agents.get(this.agents.size()-1).getType() == 'B';
-	}
 
 	@Override
 	public void takeTurn() {
 		String msg = "Tour " + super.getTurn() + " du jeu en cours";
 		System.out.println(msg);
 		
-//		this.deleteExplosedBombe();		// AVEC CETTE METHODE LES BOMBERMAN SONT TOUS ALLIÉS
-		this.deleteExplosedBombe2();	// AVEC CETTE METHODE LES BOMBERMAN SONT TOUS ENNEMIS
+		if (this.getMode() == 1) {
+			this.deleteExplosedBombe2();	// AVEC CETTE METHODE LES BOMBERMAN SONT TOUS ENNEMIS
+		} else {
+			this.deleteExplosedBombe();		// AVEC CETTE METHODE LES BOMBERMAN SONT TOUS ALLIÉS
+		}
 		this.deleteDiedAgent(this.eatBomberman());
 		
 		this.verifyEtatOfGame();
@@ -382,7 +358,12 @@ public class BombermanGame extends Game {
 
 	public void gameWin() {
 		this.bombes.clear();
-		String msg = "Félicitations ! l'agent bomberman " + this.agents.get(0).getColor() + " a remporté la partie. \nPartie Terminé (^_^)";
+		String msg = "";
+		if(this.getMode() == 1) {
+			msg = "Félicitations ! l'agent bomberman " + this.agents.get(0).getColor() + " a remporté la partie. \nPartie Terminé (^_^)";
+		} else {
+			msg = "Félicitations ! vos agents bomberman ont remporté la partie. \nPartie Terminé (^_^)";			
+		}
 		System.out.println(msg);
 		this.finish = true;
 		this.setRunning(false);
@@ -391,11 +372,33 @@ public class BombermanGame extends Game {
 	
 	public void egalityGame() {
 		this.bombes.clear();
-		String msg = "Ouuppss ! Il y a match null. \nPartie Terminé (^_^)";
+		String msg = "";
+		if(this.getMode() == 1 && !this.hasSurvivantAgentPNJ()) {
+			msg = "Ouuppss ! Il y a match null entre les agents bomberman. \nPartie Terminé (^_^)";
+		} else {
+			msg = "Ouuppss ! Il y a match null entre les bomberman ainsi que les agents PNG. \nPartie Terminé (^_^)";
+		}
+		
 		System.out.println(msg);
 		this.finish = true;
 		this.setRunning(false);
 		this.notifyObserver();
+	}
+	
+	public boolean hasSurvivantAgentBomberman() {		// CETTE METHODE ME PERMET DE SAVOIR S'IL RESTE UN AGENT BOMBERMAN SUR LE TERRAIN
+		for(Agent a: this.agents) {
+			if(a.getType() == 'B') return true;
+		} return false;
+	}
+
+	public boolean hasSurvivantAgentPNJ() {				// CETTE METHODE ME PERMET DE SAVOIR S'IL RESTE UN AGENT PNJ SUR LE TERRAIN
+		for(Agent a: this.agents) {
+			if(a.getType() != 'B') return true;
+		} return false;
+	}
+
+	public boolean hasOneSurvivant() {					// CETTE METHODE ME PERMET DE SAVOIR S'IL RESTE UN ET UN SEUL AGENT BOMBERMAN SUR LE TERRAIN (DANS LE CAS OÙ TOUS LES AGENTS SONT ENEMIS)
+		return this.agents.size() == 1 && this.agents.get(this.agents.size()-1).getType() == 'B';
 	}
 
 	public void verifyEtatOfGame() {
@@ -403,10 +406,10 @@ public class BombermanGame extends Game {
 		if(!this.hasSurvivantAgentBomberman()) {
 			this.gameOver();
 		} 
-//		else if(!this.hasSurvivantAgentPNJ()) {				// DECOMMENTE CETTE FONCTION SI TU VEUX QUE LES AGENTS BOMBERMAN SOIENT DES ALLIÉS.
-//			this.gameWin();
-//		}
-		else if(this.hasOneSurvivant()) {					// DECOMMENTE CETTE FONCTION SI TU VEUX QUE LES AGENTS BOMBERMAN SOIENT DES ENNEMIES.
+		else if(!this.hasSurvivantAgentPNJ() && this.getMode() == 2) {
+			this.gameWin();
+		}
+		else if(this.hasOneSurvivant()) {
 			this.gameWin();
 		} else if (this.getTurn() == this.getMaxturn()){
 			this.egalityGame();

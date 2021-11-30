@@ -12,6 +12,8 @@ public class EtatFin implements EtatButtonCommande{
 		this.viewCommand.getjButtonStart().setEnabled(false);
 		this.viewCommand.getjButtonPlay().setEnabled(false);
 		this.viewCommand.getjButtonPause().setEnabled(false);
+		this.viewCommand.getjButtoneExit().setEnabled(true);
+		this.viewCommand.getjButtoneChangeMode().setEnabled(true);
 		this.viewCommand.getjButtonChooseInterface().setEnabled(true);
 	}
 	

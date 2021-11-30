@@ -35,6 +35,14 @@ public abstract class AbstractController {
 		System.out.println("Ouverture du terrain de jeu : " + fileName);
 	}
 
+	public void showGame() {
+		// ASTUCE : ON NE FAIT RIEN
+	}
+	
+	public void closeGame() {
+		// ASTUCE : ON NE FAIT RIEN
+	}
+	
 	public Game getGame() {
 		return game;
 	}

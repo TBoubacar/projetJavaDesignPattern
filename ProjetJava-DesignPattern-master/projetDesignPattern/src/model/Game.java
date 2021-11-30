@@ -10,14 +10,16 @@ public abstract class Game implements Runnable, Observable {
 	private long time;
 	private InputMap inputMap;
 	private ArrayList<Observer> observateurs;
-	
+	private int mode;			// MODE 1 = LES BOMBERMANS NE SONT PAS ALLIÉS (NON COOPERATIF) | MODE 2 = LES BOMBERMANS SONT ALLIÉS (COOPERATIF)
+
 	/*---	CONSTRUCTEUR	---*/
 	public Game (int tourMax) {
 		setObservateurs(new ArrayList<Observer>());
 		this.setTurn(0);
 		this.maxturn = tourMax;
 		this.isRunning = false;
-		this.time = 1000;			//Temps d'arrêt en millisecondes
+		this.time = 1000;		//Temps d'arrêt en millisecondes
+		this.mode = 1;
 	}
 
 		/*---	OBSERVABLE METHOHS		---*/
@@ -150,5 +152,14 @@ public abstract class Game implements Runnable, Observable {
 
 	public void setInputMap(InputMap inputMap) {
 		this.inputMap = inputMap;
+	}
+
+	public int getMode() {
+		return mode;
+	}
+
+	public void setMode(int mode) {
+		this.mode = mode;
+		this.notifyObserver();
 	}
 }
