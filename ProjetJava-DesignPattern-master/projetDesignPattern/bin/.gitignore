@@ -1,3 +1,6 @@
 /model/
-/agent/
 /utils/
+/agent/
+/view/
+/controller/
+/etat/

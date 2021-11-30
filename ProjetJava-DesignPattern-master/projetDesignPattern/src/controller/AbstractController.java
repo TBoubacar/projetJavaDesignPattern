@@ -1,6 +1,7 @@
 package controller;
 
 import model.Game;
+import model.InputMap;
 
 public abstract class AbstractController {
 	private Game game;
@@ -23,6 +24,10 @@ public abstract class AbstractController {
 	
 	public void setSpeed(double speed) {
 		getGame().setTime((long) speed);
+	}
+	
+	public void setInputMap(InputMap newMap) {
+		getGame().setInputMap(newMap);
 	}
 
 	public Game getGame() {

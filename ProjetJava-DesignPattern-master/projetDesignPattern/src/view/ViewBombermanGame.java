@@ -5,7 +5,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import javax.swing.JFrame;
 
-import controller.AbstractController;
 import controller.ControllerBombermanGame;
 import model.Observer;
 
@@ -59,7 +58,7 @@ public class ViewBombermanGame implements Observer {
 		this.jFrame = jFrame;
 	}
 
-	public AbstractController getController() {
+	public ControllerBombermanGame getController() {
 		return controller;
 	}
 

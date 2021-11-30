@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import agent.Agent;
+import agent.AgentBird;
 import agent.AgentUsine;
 import utils.AgentAction;
 import utils.InfoAgent;
@@ -46,26 +47,38 @@ public class BombermanGame extends Game {
 			e.printStackTrace();
 		}
 		this.infoAgents = new ArrayList<InfoAgent>();
-		this.infoMurs = new boolean[this.getInputMap().get_walls().length][this.getInputMap().get_walls()[0].length];
 		this.setInfoItems(new ArrayList<InfoItem>());
-
-		for(InfoAgent a : this.getInputMap().getStart_agents())
-			this.infoAgents.add(a);
 
 		this.initializeGame();
 	}
 
-	public ArrayList<InfoBomb> getBombes() {
-		return bombes;
-	}
 
-	public void setBombes(ArrayList<InfoBomb> bombes) {
-		this.bombes = bombes;
+	@Override
+	public void initializeGame() {
+		int i = 0;
+		this.infoMurs = new boolean[this.getInputMap().get_walls().length][this.getInputMap().get_walls()[0].length];
+		for(boolean[] m : this.getInputMap().getStart_breakable_walls())
+			this.infoMurs[i++] = m.clone();
+
+		this.finish = false;
+		this.agents.clear();
+		this.bombes.clear();
+		this.items.clear();
+		this.infoItems.clear();
+		this.infoAgents.clear();
+
+		for(InfoAgent a : this.getInputMap().getStart_agents())
+			this.infoAgents.add(a);
+
+		for(InfoAgent agent : this.getInputMap().getStart_agents()) {
+			this.agents.add(this.usineOfAgent.createAgent(agent.getType(), agent.getColor(), agent.getX(), agent.getY()));
+		}
+		//		System.out.println(this.usineOfAgent);		// VOUS POUVEZ DECOMMENTER CE CODE POUR VOUS ASSURER QUE LA CLASSE HASHTABLE GERE BIEN LE CAS DES DOUBLONS ET EVITE DE LES INSERER
 	}
 
 	public boolean isLegalMove(Agent agent, AgentAction agentAction) {
 		// LE DEPLACEMENT N'EST POSSIBLE QUE SI ON NE SE TROUVERA PAS À LA MÊME POSITION QU'UN MÛR QUELQUE SOIT SON TYPE (BRISABLE OU PAS)
-		if((agent.getX() >= 1 && agent.getY() >= 1) && (agent.getX() <= this.getInputMap().get_walls().length && agent.getY() <= this.getInputMap().get_walls().length)) {
+		if((agent.getX() >= 1 && agent.getY() >= 1) && (agent.getX() < this.getInputMap().get_walls().length && agent.getY() < this.getInputMap().get_walls()[0].length)) {
 			switch(agentAction) {
 			case MOVE_DOWN:
 				if(agent.isCanFly()) return !this.getInputMap().get_walls()[agent.getX()][agent.getY()+1];
@@ -97,8 +110,20 @@ public class BombermanGame extends Game {
 	}
 
 	public void moveAgent(Agent agent, AgentAction action) {
-		if(isLegalMove(agent, action))
-			agent.move(action);
+		if(isLegalMove(agent, action)) {
+			if(agent.getType() == 'V' && agent.isSleep()) {
+				AgentBird bird = (AgentBird) agent;
+				if(bird.agentBirdRadar(this.agents)) {
+					System.out.println("Agent Bird (" + agent.getX() +", " + agent.getY() + ") a répéré un agent bomberman a {" + bird.getRayonAction() + "} mètres de lui !");
+					agent.setSleep(false);
+					agent.setMoveStrategie(new AleatoireStrategie());
+					agent.move(action);
+				}	// L'AGENT BIRD NE BOUGE QUE S'IL REPÈRE UN BOMBERMAN DANS UN RAYON DE bird.getRayonAction() MÈTRES
+			}
+			else {
+				agent.move(action);
+			}
+		}
 	}
 
 	public void putBomb(Agent bomberman) {
@@ -107,28 +132,10 @@ public class BombermanGame extends Game {
 			bomberman.getBombes().add(bombe);	//	UTILE POUR DIFFÉRENTIER LES BOMBES APPARTENANT A CHAQUE BOMBERMAN. DE CETTE MANIÈRE LES BOMBERMANS NE SERONT PAS TUÉS PAR LEURS PROPRES BOMBES
 			this.bombes.add(bombe);			
 		} else {
-			System.out.println("LE BOMBERMAN (" + bomberman.getX() + ", " + bomberman.getY()  + ") EST MALADE POUR POSER DES BOMBES, DÉSOLÉ !");
+			System.out.println("LE BOMBERMAN ["+ bomberman.getColor() + "] EN POSITION (" + bomberman.getX() + ", " + bomberman.getY()  + ") EST MALADE POUR POSER DES BOMBES, DÉSOLÉ !");
 		}
 	}
-
-	@Override
-	public void initializeGame() {
-		int i = 0;
-		for(boolean[] m : this.getInputMap().getStart_breakable_walls())
-			this.infoMurs[i++] = m.clone();
-		this.finish = false;
-		this.agents.clear();
-		this.bombes.clear();
-		this.items.clear();
-		this.infoItems.clear();
-		this.infoAgents.clear();
-
-		for(InfoAgent agent : this.getInputMap().getStart_agents()) {
-			this.agents.add(this.usineOfAgent.createAgent(agent.getType(), agent.getColor(), agent.getX(), agent.getY()));
-		}
-		//		System.out.println(this.usineOfAgent);		// VOUS POUVEZ DECOMMENTER CE CODE POUR VOUS ASSURER QUE LA CLASSE HASHTABLE GERE BIEN LE CAS DES DOUBLONS ET EVITE DE LES INSERER
-	}
-
+	
 	public ArrayList<InfoAgent> agentToucher(InfoBomb bombe) {
 		ArrayList<InfoAgent> agentsToucher = new ArrayList<InfoAgent>();
 		for(InfoAgent a: this.infoAgents) {
@@ -159,7 +166,7 @@ public class BombermanGame extends Game {
 				Agent agent = iter.next();
 				if(!agent.isInvincible() && agent.getType() == cetAgent.getType() && agent.getX() == cetAgent.getX() && agent.getY() == cetAgent.getY()) {
 					iter.remove();
-					System.out.println("Agent [" + agent.getType() + "] éliminé à la position (" + agent.getX() + ", " + agent.getY() + ")");
+					System.out.println("Agent [" + agent.getType() + "] est éliminé à la position (" + agent.getX() + ", " + agent.getY() + ")");
 				}
 			}
 			while(iter2.hasNext()) {	// PUIS ON SUPPRIME LES INFORMATIONS SUR L'AGENT
@@ -259,6 +266,9 @@ public class BombermanGame extends Game {
 	public InfoAgent eatBomberman() {		
 		for(InfoAgent agent : this.infoAgents) {		// ON SUPPRIME LES INFORMATIONS SUR LES AGENTS BOMBERMAN QUI DOIVENT ETRE MANGER
 			for(InfoAgent cetAgent : this.infoAgents) {
+				if (agent.isInvincible() && agent.getType() == 'B' && agent.getType() != cetAgent.getType() && agent.getX() == cetAgent.getX() && agent.getY() == cetAgent.getY()) {
+					System.out.println("LE BOMBERMAN["+ agent.getColor() + "] EN POSITION (" + agent.getX() + ", " + agent.getY()  + ") EST INVINCIBLE, DONC NE PEUT PAS ETRE TUÉ !");
+				}
 				if(!agent.isInvincible() && agent.getType() == 'B' && agent.getType() != cetAgent.getType() && agent.getX() == cetAgent.getX() && agent.getY() == cetAgent.getY()) {
 					return agent;				
 				}
@@ -291,7 +301,7 @@ public class BombermanGame extends Game {
 			for(Agent agent : this.agents) {
 				for(Item item: this.items) {
 					if(item.getItemType() != null && agent.getType() == 'B' && agent.getX() == item.getX() && agent.getY() == item.getY()) {
-						System.out.println("Le type d'item pris en position ("  + agent.getX() + ", " + agent.getY()  + ") est : [" + item.getItemType() + "]");
+						System.out.println("L'agent ["+ agent.getColor() + "] en position ("  + agent.getX() + ", " + agent.getY()  + ") a pris l'item : <<" + item.getItemType() + ">>");
 						agent.applyItemEffet(item);
 						return item;
 					}
@@ -372,7 +382,7 @@ public class BombermanGame extends Game {
 
 	public void gameWin() {
 		this.bombes.clear();
-		String msg = "Félicitations ! Un agent bomberman a remporté la partie. \nPartie Terminé (^_^)";
+		String msg = "Félicitations ! l'agent bomberman " + this.agents.get(0).getColor() + " a remporté la partie. \nPartie Terminé (^_^)";
 		System.out.println(msg);
 		this.finish = true;
 		this.setRunning(false);
@@ -449,4 +459,13 @@ public class BombermanGame extends Game {
 	public void setItems(ArrayList<Item> items) {
 		this.items = items;
 	}
+
+	public ArrayList<InfoBomb> getBombes() {
+		return bombes;
+	}
+
+	public void setBombes(ArrayList<InfoBomb> bombes) {
+		this.bombes = bombes;
+	}
+
 }

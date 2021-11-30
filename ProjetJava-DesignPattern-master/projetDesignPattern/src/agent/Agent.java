@@ -23,6 +23,7 @@ public abstract class Agent {
 	private ArrayList<InfoBomb> bombes;					// CECI CORRESPOND À L'ENSEMBLE DES INFORMATIONS DES BOMBES SUR NOTRE TERRAIN DE JEU POUR UN BOMBERMAN EN PARTICULIER
 	private int BOMBE_RANGE = 2;						// RANGE DE LA BOMBE SPECIFIQUE À CHAQUE AGENT BOMBERMAN
 	private final int NB_TOURS_OF_ITEM_EFFET = 20;		// LE NOMBRE DE TOUR AVANT QUE L'EFFET DE L'ITEM SE DESACTIVE (DANS LE CAS DES FIRE_UP ET FIRE_DOWN) CELA NE CHANGE RIEN
+	private boolean sleep;
 
 	/*---	CONSTRUCTEUR	---*/
 	public Agent(int x, int y) {
@@ -35,6 +36,7 @@ public abstract class Agent {
 		this.isSick = false;
 		this.nbTourOfSick = 0;
 		this.bombes = new ArrayList<InfoBomb>();
+		this.sleep = false;
 	}
 	
 	/*-----------	METHODES	----------*/
@@ -194,5 +196,13 @@ public abstract class Agent {
 
 	public void setBOMBE_RANGE(int bOMBE_RANGE) {
 		BOMBE_RANGE = bOMBE_RANGE;
+	}
+	
+	public boolean isSleep() {
+		return sleep;
+	}
+
+	public void setSleep(boolean sleep) {
+		this.sleep = sleep;
 	}
 }

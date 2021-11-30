@@ -11,7 +11,8 @@ public class EtatPlay implements EtatButtonCommande {
 		this.viewCommand.getjButtonRestart().setEnabled(true);
 		this.viewCommand.getjButtonStart().setEnabled(true);
 		this.viewCommand.getjButtonPlay().setEnabled(true);
-		this.viewCommand.getjButtonPause().setEnabled(false);		
+		this.viewCommand.getjButtonPause().setEnabled(false);
+		this.viewCommand.getjButtonChooseInterface().setEnabled(true);
 	}
 	
 	@Override

@@ -11,33 +11,65 @@ import java.awt.event.ActionListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
 import controller.AbstractController;
+import controller.ControllerBombermanGame;
 import etat.EtatBase;
 import etat.EtatButtonCommande;
 import etat.EtatFin;
+import model.InputMap;
 import model.Observer;
 
 public class ViewCommand implements Observer {	
 	JFrame jFrame;
 	JSlider jSlider;
-	JButton jButtonRestart;		//MON BOUTON REDEMARRER
-	JButton jButtonStart;		//MON BOUTON RUN (JOUER AUTOMATIQUEMENT)
-	JButton jButtonPlay;		//MON BOUTON STEP
-	JButton jButtonPause;		//MON BOUTON PAUSE
+	JButton jButtonRestart;				//MON BOUTON REDEMARRER
+	JButton jButtonStart;				//MON BOUTON RUN (JOUER AUTOMATIQUEMENT)
+	JButton jButtonPlay;				//MON BOUTON STEP
+	JButton jButtonPause;				//MON BOUTON PAUSE
 	JLabel jLabelSlider;
 	JLabel jLabel;
-	AbstractController controller;
+	ControllerBombermanGame controller;
 	private EtatButtonCommande etat;
 	
-	public ViewCommand(AbstractController controllerGame) {
-		this.controller = controllerGame;
-		this.controller.getGame().addObserver(this);
+	// PARTIE BONUS
+	JButton jButtonChooseInterface;		//MON BOUTON POUR CHOISIR UN PLATEAU DU JEU
 
+	public ViewCommand(AbstractController controllerGame) {
+		this.controller = (ControllerBombermanGame) controllerGame;
+
+		this.createFrame();
+		
+		this.createButton();
+		
+		this.createSlider();
+		
+		this.ajoutePanelOnJFrame();
+	}
+
+	/*---		METHODS OBSERVER		---*/
+	@Override
+	public void update(int nombreTour) {
+		this.jLabel.setText("Turn : " + nombreTour);
+
+		// GESTION DE LA VITESSE DU JEU
+		if(this.jSlider.getValue() > 0) {
+			this.controller.setSpeed((double) (1000/this.jSlider.getValue()));
+		}
+		
+		// GESTION DE LA FIN DU JEU
+		if(this.controller.getGame().getTurn() == this.controller.getGame().getMaxturn() || !this.controller.getGame().gameContinue()) {
+			this.setEtat(new EtatFin(this));
+		}
+	}
+	
+	/*---		METHODS CONCRETE		---*/
+	public void createFrame() {
 		/*---		JFRAME		---*/
 		jFrame = new JFrame();
 		jFrame.setTitle("Commande");
@@ -48,8 +80,9 @@ public class ViewCommand implements Observer {
 		int dx = centerPoint.x - windowSize.width / 2 + 350 ;
 		int dy = centerPoint.y - windowSize.height / 2 - 450;
 		jFrame.setLocation(dx,dy);
-		
-
+	}
+	
+	public void createButton() {
 		/*---		ICONS & BUTTONS		---*/
 		Icon restartIcon= new ImageIcon("icons/icon_restart.png");
 		Icon startIcon= new ImageIcon("icons/icon_play.png");
@@ -60,7 +93,10 @@ public class ViewCommand implements Observer {
 		jButtonStart= new JButton(startIcon);
 		jButtonPlay = new JButton(playIcon);
 		jButtonPause = new JButton(pauseIcon);
-				//DE BASE TOUS LES BOUTONS SONT DESACTIVÉS SAUF LE BOUTON QUI LANCE LA PERMET DE LANCER LA PARTIE
+		// PARTIE BONUS
+		jButtonChooseInterface = new JButton("Choose Interface of gaming");
+
+		//DE BASE TOUS LES BOUTONS SONT DESACTIVÉS SAUF LE BOUTON QUI LANCE LA PERMET DE LANCER LA PARTIE
 		this.etat = new EtatBase(this);
 		
 		jButtonRestart.addActionListener(new ActionListener() {	//BUTTON REDEMARRER
@@ -86,7 +122,33 @@ public class ViewCommand implements Observer {
 				etat.pause();
 			}
 		});
-		
+
+		jButtonChooseInterface.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evenement) {
+				JFileChooser jFileChooser = new JFileChooser("layouts/");
+				jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				if(jFileChooser.showOpenDialog(jFrame) == JFileChooser.APPROVE_OPTION) {
+					getjButtonRestart().setEnabled(true);
+					getjButtonStart().setEnabled(false);
+					getjButtonPlay().setEnabled(false);
+					getjButtonPause().setEnabled(false);
+
+					try {
+						String fileName = jFileChooser.getSelectedFile().getAbsolutePath();
+						controller.setInputMap(new InputMap(fileName));
+						controller.changeMapOfGaming(fileName);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		});		
+	}
+	
+	public void createSlider() {
 		/*---		JSLIDER & JLABEL SLIDER		---*/
 		jSlider = new JSlider();
 		jSlider.setValue(1);
@@ -99,11 +161,12 @@ public class ViewCommand implements Observer {
 		jLabelSlider.setFont(new Font("Serif", Font.BOLD, 14));
 		
 		/*---		AFFICHAGE NOMBRE TOUR		---*/
-		String msg = "Turn : " + controllerGame.getGame().getMaxturn();
+		String msg = "Turn : " + this.controller.getGame().getMaxturn();
 		jLabel = new JLabel(msg, JLabel.CENTER);
 		jLabel.setFont(new Font("Serif", Font.BOLD, 14));
-		
-
+	}
+	
+	public void ajoutePanelOnJFrame() {
 		/*---		JPANEL		---*/
 		JPanel jPanelBouton = new JPanel(new GridLayout(1, 4));
 		jPanelBouton.add(jButtonRestart);
@@ -118,15 +181,21 @@ public class ViewCommand implements Observer {
 		JPanel jPanel3 = new JPanel(new GridLayout(1,2));
 		jPanel3.add(jLabel);
 		
-		JPanel jPanelMain1 = new JPanel(new GridLayout(2, 1));
+		JPanel jPanelMain1 = new JPanel(new GridLayout(3, 1));
 		JPanel jPanelMain2 = new JPanel(new GridLayout(1, 2));
 		
 		jPanelMain1.add(jPanelBouton);
+		
+		// BONUS
+		JPanel panelChooseInterfaceButton = new JPanel();
+		panelChooseInterfaceButton.add(jButtonChooseInterface);
+		jPanelMain1.add(panelChooseInterfaceButton);
+		
 		jPanelMain2.add(jPanel2);
 		jPanelMain2.add(jPanel3);
 		jPanelMain1.add(jPanelMain2);
 
-		jFrame.add(jPanelMain1);
+		jFrame.add(jPanelMain1);		
 	}
 
 	public void changePanel(JPanel panel) {
@@ -146,25 +215,9 @@ public class ViewCommand implements Observer {
 	}
 
 	public void setController(AbstractController controller) {
-		this.controller = controller;
+		this.controller = (ControllerBombermanGame) controller;
 	}
 
-	/*---		METHODS OBSERVER		---*/
-	@Override
-	public void update(int nombreTour) {
-		this.jLabel.setText("Turn : " + nombreTour);
-
-		// GESTION DE LA VITESSE DU JEU
-		if(this.jSlider.getValue() > 0) {
-			this.controller.setSpeed((double) (1000/this.jSlider.getValue()));
-		}
-		
-		// GESTION DE LA FIN DU JEU
-		if(this.controller.getGame().getTurn() == this.controller.getGame().getMaxturn() || !this.controller.getGame().gameContinue()) {
-			this.setEtat(new EtatFin(this));
-		}
-	}
-	
 	public JFrame getjFrame() {
 		return jFrame;
 	}
@@ -235,5 +288,13 @@ public class ViewCommand implements Observer {
 
 	public void setEtat(EtatButtonCommande etat) {
 		this.etat = etat;
+	}
+	
+	public JButton getjButtonChooseInterface() {
+		return jButtonChooseInterface;
+	}
+
+	public void setjButtonChooseInterface(JButton jButtonChooseInterface) {
+		this.jButtonChooseInterface = jButtonChooseInterface;
 	}
 }
