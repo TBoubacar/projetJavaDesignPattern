@@ -3,9 +3,9 @@ package agent;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import model.AleatoireStrategie;
 import model.Item;
-import model.MoveStrategie;
+import strategie.AleatoireStrategie;
+import strategie.MoveStrategie;
 import utils.AgentAction;
 import utils.ColorAgent;
 import utils.InfoBomb;
@@ -39,7 +39,7 @@ public abstract class Agent {
 		this.sleep = false;
 	}
 	
-	/*-----------	METHODES	----------*/
+	/*-----------	METHODES : PATRON DE METHODES	----------*/
 	public final void moving(AgentAction action, ArrayList<Agent> agents) {
 		this.move(action, agents);
 	}

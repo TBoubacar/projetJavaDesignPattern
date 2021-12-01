@@ -1,4 +1,4 @@
-package model;
+package strategie;
 
 import utils.AgentAction;
 

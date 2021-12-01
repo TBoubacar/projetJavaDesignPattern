@@ -16,10 +16,10 @@ public class Item {
 		this.y=y;
 	}
 	
-	// ON A UNE CHANCE SUR 20 DE METTRE UN ITEM
+	// ON A 4 CHANCE SUR 7 DE METTRE UN ITEM
 	public ItemType chooseAleatoireItem() {
 		Random hasard= new Random();
-		switch (hasard.nextInt(8)) {
+		switch (hasard.nextInt(7)) {
 		case 0:
 			setItemType(ItemType.FIRE_SUIT);
 			return getItemType();

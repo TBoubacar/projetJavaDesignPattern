@@ -8,6 +8,10 @@ import java.awt.Point;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import controller.AbstractController;
 import model.Observer;
@@ -30,7 +34,7 @@ public class ViewSimpleGame implements Observer {
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Point centerPoint = ge.getCenterPoint();
 		int dx = centerPoint.x - windowSize.width / 2 + 450;
-		int dy = centerPoint.y - windowSize.height / 2 + 80;
+		int dy = centerPoint.y - windowSize.height / 2 + 180;
 
 		/*---		AFFICHAGE NOMBRE TOUR		---*/
 		String msg = "Turn : " + this.controller.getGame().getMaxturn();
@@ -39,6 +43,12 @@ public class ViewSimpleGame implements Observer {
 		jFrame.add(jLabel);
 		
 		jFrame.setLocation(dx,dy);
+		jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		try {
+			UIManager.setLookAndFeel( new NimbusLookAndFeel() );
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void addPanel(JPanel panel) {
@@ -50,7 +60,7 @@ public class ViewSimpleGame implements Observer {
 	}
 	
 	public void close() {
-		jFrame.setVisible(false);
+		jFrame.dispose();
 	}
 
 	public AbstractController getController() {

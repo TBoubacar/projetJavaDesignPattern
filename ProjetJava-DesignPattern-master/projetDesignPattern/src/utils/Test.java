@@ -12,6 +12,7 @@ public class Test {
 
 		@SuppressWarnings("unused")
 		ControllerBombermanGame controllerBombermanGame = new ControllerBombermanGame(500);
+
 	}
 
 }

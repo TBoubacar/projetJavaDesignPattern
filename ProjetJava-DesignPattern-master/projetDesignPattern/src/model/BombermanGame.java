@@ -2,7 +2,6 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 
 import agent.Agent;
 import agent.AgentUsine;
@@ -111,7 +110,7 @@ public class BombermanGame extends Game {
 
 	public void moveAgent(Agent agent, AgentAction action) {
 		if(isLegalMove(agent, action)) {
-			agent.move(action, this.agents);
+			agent.moving(action, this.agents);
 		}
 	}
 
@@ -314,13 +313,12 @@ public class BombermanGame extends Game {
 		
 		this.verifyEtatOfGame();
 		
-		Random hasard= new Random(System.currentTimeMillis());
 		this.infoAgents.clear();		// ON VA METTRE À JOUR LES INFORMATIONS SUR LES AGENTS
 
 		for(Agent agent : this.agents) {
 			AgentAction action = agent.chooseStrategie();
 
-			if(hasard.nextInt(20) == 0 && agent.getType() == 'B') {
+			if(action == AgentAction.PUT_BOMB && agent.getType() == 'B') {
 				this.putBomb(agent);	
 			}
 			this.moveAgent(agent, action);
