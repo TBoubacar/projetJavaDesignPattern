@@ -1,7 +1,7 @@
 package utils;
 
 import controller.ControllerBombermanGame;
-import controller.ControllerSimpleGame;
+//import controller.ControllerSimpleGame;
 
 public class Test {
 

@@ -87,6 +87,7 @@ public class ViewCommand implements Observer {
 		String info = "";
 		info += "#################################\n"		;
 		info += "# \tBOMERMAN GAME \n"			;
+		info += "# Le nombre de tours maximum : " + this.controller.getGame().getMaxturn() + "\n";
 		info += "# Le nombre d'agent Bomberman : " + this.controller.getGame().nbAgentBombermanSurvivant() + "\n";
 		info += "# Le nombre d'agent PNJ : " +  this.controller.getGame().nbAgentPNGSurvivant() + "\n"		;
 		info += "# \t-----------INFOS-------------\n"		;
@@ -261,6 +262,7 @@ public class ViewCommand implements Observer {
 		String info = "";
 		info += "#################################\n"		;
 		info += "# \tBOMERMAN GAME \n"			;
+		info += "# Le nombre de tours maximum : " + this.controller.getGame().getMaxturn() + "\n";
 		info += "# Le nombre d'agent Bomberman : " + this.controller.getGame().nbAgentBombermanSurvivant() + "\n";
 		info += "# Le nombre d'agent PNJ : " +  this.controller.getGame().nbAgentPNGSurvivant() + "\n"		;
 		info += "# \t-----------INFOS-------------\n"		;

@@ -12,13 +12,7 @@ import utils.InfoItem;
 import utils.ItemType;
 import utils.StateBomb;
 
-public class BombermanGame extends Game {
-	/*
-	 * 	DANS MA METHODOLOGIE D'IMPLEMENTATION DU CODE, TOUS LES AGENTS BOMBERMANS SONT ALLIÉS LORS QUE J'UTILISE LA METHODE : deleteExplosedBombe()
-	 * 	ET ILS SONT TOUS ENNEMIS QUAND ON UTILISE LA METHODE : deleteExplosedBombe2() 
-	 * 	DANS LA METHODE takeTurn()
-	 */
-	
+public class BombermanGame extends Game {	
 	private boolean finish;						// VARIABLE PERMETTANT DE METTRE FIN AU JEU
 	private AgentUsine usineOfAgent;			// CECI CORRESPOND À UNE USINE D'AGENTS PERMETTANT DE CRÉER DIFFÉRENT TYPE D'AGENT (ON NE POSSÈDE QUE 4 TYPES POUR LE MOMENT)
 
