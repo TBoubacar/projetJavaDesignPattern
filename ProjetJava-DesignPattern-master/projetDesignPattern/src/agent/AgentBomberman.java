@@ -31,28 +31,28 @@ public class AgentBomberman extends Agent{
 		
 		if(this.bombermanRadarRepere(agents)) {
 			if(this.bombermanRadarRepereOnTopRight(agents)) {
-				if(!this.isInvincible()) {
+				if(!this.isInvincible() && this.getBOMBE_RANGE() < 3) {
 					this.setMoveStrategie(new PutBombAndRunToBottomOrLeftStrategie());
 				} else {
 					this.setMoveStrategie(new PutBombAndRunToTopOrRightStrategie());
 				}
 			} 
 			else if (this.bombermanRadarRepereOnBottomLeft(agents)) {
-				if(!this.isInvincible()) {
+				if(!this.isInvincible() && this.getBOMBE_RANGE() < 3) {
 					this.setMoveStrategie(new PutBombAndRunToTopOrRightStrategie());
 				} else {
 					this.setMoveStrategie(new PutBombAndRunToBottomOrLeftStrategie());					
 				}
 			} 
 			else if (this.bombermanRadarRepereOnBottomRight(agents)) {
-				if(!this.isInvincible()) {
+				if(!this.isInvincible() && this.getBOMBE_RANGE() < 3) {
 					this.setMoveStrategie(new PutBombAndRunToTopOrLeftStrategie());
 				} else {
 					this.setMoveStrategie(new PutBombAndRunToBottomOrRightStrategie());					
 				}
 			} 
 			else {
-				if(!this.isInvincible()) {
+				if(!this.isInvincible() && this.getBOMBE_RANGE() < 3) {
 					this.setMoveStrategie(new PutBombAndRunToBottomOrRightStrategie());
 				} else {
 					this.setMoveStrategie(new PutBombAndRunToTopOrLeftStrategie());

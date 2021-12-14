@@ -24,12 +24,12 @@ public class ViewBombermanGame implements Observer {
 		/*---		JFRAME		---*/
 		jFrame = new JFrame();
 		jFrame.setTitle("Game");
-		jFrame.setSize(new Dimension(950, 600));
+		jFrame.setSize(new Dimension(960, 680));
 		Dimension windowSize = jFrame.getSize();
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Point centerPoint = ge.getCenterPoint();
 		int dx = centerPoint.x - windowSize.width / 2 - 500;
-		int dy = centerPoint.y - windowSize.height / 2 - 150;
+		int dy = centerPoint.y - windowSize.height / 2 - 180;
 		jFrame.setLocation(dx,dy);
 
 		this.panelBomberman = new PanelBomberman(this.getController().getGame().getInputMap().getSizeX(), this.getController().getGame().getInputMap().getSizeY(), this.getController().getGame().getInputMap().get_walls(), this.controller.getGame().getInfoMurs(), this.controller.getGame().getInfoAgents());

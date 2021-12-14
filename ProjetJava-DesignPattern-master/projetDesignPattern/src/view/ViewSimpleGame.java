@@ -34,7 +34,7 @@ public class ViewSimpleGame implements Observer {
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Point centerPoint = ge.getCenterPoint();
 		int dx = centerPoint.x - windowSize.width / 2 + 450;
-		int dy = centerPoint.y - windowSize.height / 2 + 180;
+		int dy = centerPoint.y - windowSize.height / 2 + 350;
 
 		/*---		AFFICHAGE NOMBRE TOUR		---*/
 		String msg = "Turn : " + this.controller.getGame().getMaxturn();

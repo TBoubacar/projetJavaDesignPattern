@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
 
+import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -17,9 +18,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
@@ -41,7 +44,11 @@ public class ViewCommand implements Observer {
 	JButton jButtonPause;				//MON BOUTON PAUSE
 	JButton jButtoneExit;				//MON BOUTON EXIT
 	JButton jButtoneChangeMode;			//MON BOUTON CHANGE MODE
-
+	ButtonGroup groupBtn;				//MON BOUTON POUR CHANGER LE THEME DE MON INTERFACE GRAPHIQUE
+	JRadioButton jRadioButtonMetal;		//LE THÈME METAL
+	JRadioButton jRadioButtonMotif;		//LE THÈME MOTIF
+	JRadioButton jRadioButtonDefault;	//LE THÈME PAR DEFAULT
+	
 	JLabel jLabelSlider;
 	JLabel jLabel;
 	JLabel jLabel2;
@@ -136,11 +143,11 @@ public class ViewCommand implements Observer {
 		/*---		JFRAME		---*/
 		jFrame = new JFrame();
 		jFrame.setTitle("Commande");
-		jFrame.setSize(new Dimension(700, 500));
+		jFrame.setSize(new Dimension(800, 680));
 		Dimension windowSize = jFrame.getSize();
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Point centerPoint = ge.getCenterPoint();
-		int dx = centerPoint.x - windowSize.width / 2 + 350 ;
+		int dx = centerPoint.x - windowSize.width / 2 + 400 ;
 		int dy = centerPoint.y - windowSize.height / 2 - 300;
 		jFrame.setLocation(dx,dy);
 		try {
@@ -222,7 +229,58 @@ public class ViewCommand implements Observer {
 				}
 			}
 			
-		});		
+		});
+
+		jRadioButtonDefault = new JRadioButton("Default", true);
+		jRadioButtonMetal = new JRadioButton("Metal");
+		jRadioButtonMotif = new JRadioButton("Motif");
+		
+		groupBtn = new ButtonGroup();
+		groupBtn.add(jRadioButtonDefault);
+		groupBtn.add(jRadioButtonMetal);
+		groupBtn.add(jRadioButtonMotif);
+
+		jRadioButtonDefault.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				try {
+					UIManager.setLookAndFeel( new NimbusLookAndFeel() );
+				    SwingUtilities.updateComponentTreeUI(jFrame);
+				} catch (Exception e) {
+					System.out.println("Erreur lors de la définition du LookAndFeel..." + e);
+				}
+			}
+			
+		});
+		
+		jRadioButtonMetal.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				String LookAndFeel = "javax.swing.plaf.metal.MetalLookAndFeel";
+				try {
+					UIManager.setLookAndFeel(LookAndFeel);
+				    SwingUtilities.updateComponentTreeUI(jFrame);
+				} catch (Exception e) {
+					System.out.println("Erreur lors de la définition du LookAndFeel..." + e);
+				}
+			}
+			
+		});
+		
+		jRadioButtonMotif.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				String LookAndFeel = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
+				try {
+					UIManager.setLookAndFeel(LookAndFeel);
+				    SwingUtilities.updateComponentTreeUI(jFrame);
+				} catch (Exception e) {
+					System.out.println("Erreur lors de la définition du LookAndFeel..." + e);
+				}
+			}
+			
+		});
+		
 	}
 	
 	public void createSlider() {
@@ -292,16 +350,30 @@ public class ViewCommand implements Observer {
 		// BONUS
 		JScrollPane jScrollPane = new JScrollPane(this.jTextArea);
 		
-		JPanel jPanelGridOfScrollable = new JPanel(new GridLayout(2, 1));
+		JPanel jPanelGridOfScrollable = new JPanel(new GridLayout(3, 1));
 		JPanel jPanelExit = new JPanel(new GridLayout(1, 1));
 		jPanelExit.add(jButtoneExit);
 		jPanelGridOfScrollable.add(jPanelExit);
+
+		JPanel jPanelTheme = new JPanel(new GridLayout(2, 1));
+		JLabel textChangeInterface = new JLabel("Change thème of interface", JLabel.CENTER);
+		textChangeInterface.setFont(new Font("Serif", Font.BOLD, 14));
 		
+		JPanel jPanelGroupBtn = new JPanel(new GridLayout(1, 1));
+		jPanelGroupBtn.add(jRadioButtonDefault);
+		jPanelGroupBtn.add(jRadioButtonMetal);
+		jPanelGroupBtn.add(jRadioButtonMotif);
+
+		jPanelTheme.add(textChangeInterface);
+		jPanelTheme.add(jPanelGroupBtn);
+
 		JPanel jPanelBTNBonus = new JPanel(new GridLayout(1, 2));
 		jPanelBTNBonus.add(jButtoneChangeMode);
 		jPanelBTNBonus.add(jButtonChooseInterface);
 		
 		jPanelGridOfScrollable.add(jPanelBTNBonus);
+		jPanelGridOfScrollable.add(jPanelTheme);
+
 
 		JPanel jpanelScrollable = new JPanel(new GridLayout(1, 2));		
 		jpanelScrollable.add(jScrollPane);
@@ -450,5 +522,29 @@ public class ViewCommand implements Observer {
 
 	public void setjTextArea(JTextArea jTextArea) {
 		this.jTextArea = jTextArea;
+	}
+	
+	public ButtonGroup getGroupBtn() {
+		return groupBtn;
+	}
+
+	public void setGroupBtn(ButtonGroup groupBtn) {
+		this.groupBtn = groupBtn;
+	}
+
+	public JRadioButton getjRadioButtonMetal() {
+		return jRadioButtonMetal;
+	}
+
+	public void setjRadioButtonMetal(JRadioButton jRadioButtonMetal) {
+		this.jRadioButtonMetal = jRadioButtonMetal;
+	}
+
+	public JRadioButton getjRadioButtonMotif() {
+		return jRadioButtonMotif;
+	}
+
+	public void setjRadioButtonMotif(JRadioButton jRadioButtonMotif) {
+		this.jRadioButtonMotif = jRadioButtonMotif;
 	}
 }
