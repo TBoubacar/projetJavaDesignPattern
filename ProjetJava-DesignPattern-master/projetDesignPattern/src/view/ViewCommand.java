@@ -80,9 +80,9 @@ public class ViewCommand implements Observer {
 		this.jLabel.setText("Turn : " + nombreTour);
 		
 		if(this.controller.getGame().getMode() == 1) {
-			this.jLabel2.setText("Mode du jeu : NON COOPÉRATIF");
+			this.jLabel2.setText("Game mode: NON COOPERATIVE");
 		} else {
-			this.jLabel2.setText("Mode du jeu : COOPÉRATIF");			
+			this.jLabel2.setText("Game mode: COOPERATIVE");			
 		}
 
 		// GESTION DE LA VITESSE DU JEU
@@ -94,42 +94,42 @@ public class ViewCommand implements Observer {
 		String info = "";
 		info += "#################################\n"		;
 		info += "# \tBOMERMAN GAME \n"			;
-		info += "# Le nombre de tours maximum : " + this.controller.getGame().getMaxturn() + "\n";
-		info += "# Le nombre d'agent Bomberman : " + this.controller.getGame().nbAgentBombermanSurvivant() + "\n";
-		info += "# Le nombre d'agent PNJ : " +  this.controller.getGame().nbAgentPNGSurvivant() + "\n"		;
-		info += "# \t-----------INFOS-------------\n"		;
-		info += "# \tLE JEU PEUT COMMENCER : \n"			;
+		info += "# The maximum number of turns : " + this.controller.getGame().getMaxturn() + "\n";
+		info += "# The number of Agent Bomberman : " + this.controller.getGame().nbAgentBombermanSurvivant() + "\n";
+		info += "# The number of PNG agents : " +  this.controller.getGame().nbAgentPNGSurvivant() + "\n"		;
+		info += "# \t-----------INFO-------------\n"		;
+		info += "# \tTHE GAME CAN BEGIN : \n"			;
 		
 		// GESTION DE LA FIN DU JEU
 		if(this.controller.getGame().getTurn() == this.controller.getGame().getMaxturn() || !this.controller.getGame().gameContinue()) {
 			this.setEtat(new EtatFin(this));
-			info += "# \t ---FIN DE LA PARTIE--- \n";
+			info += "# \t ---END OF GAME--- \n";
 			
 			if(!this.controller.getGame().hasSurvivantAgentBomberman()) {
 				if(this.controller.getGame().getMode() == 1 && this.controller.getGame().getMaxturn() != this.controller.getGame().getTurn() && !this.controller.getGame().hasSurvivantAgentPNJ()) {
-					info += "# Oooh Oooooohhh ! \n# Vos agents bomberman se sont tués (Match null).\n";
+					info += "# Oooh Oooooohhh ! \n# Your bomberman agents killed each other (Match null).\n";
 				} else {
-					info += "# Oooh Oooooohhh ! \n# Vos agents bomberman ont été mangé.\n";
+					info += "# Oooh Oooooohhh ! \n# Your bomberman agents have been eaten.\n";
 				}
 			} 
 			else if(!this.controller.getGame().hasSurvivantAgentPNJ() && this.controller.getGame().getMode() == 2) {
 				if(this.controller.getGame().getMode() == 1) {
-					info += "# Félicitations ! \n# L'agent bomberman " + this.controller.getGame().getSurvivant().getColor() + " a remporté la partie.\n";
+					info += "# Congratulation ! \n# Agent Bomberman " + this.controller.getGame().getSurvivant().getColor() + " won the game.\n";
 				} else {
-					info += "# Félicitations ! \n# Vos agents bomberman ont remporté la partie.\n";			
+					info += "# Congratulation ! \n# Your bomberman agents won the game.\n";			
 				}
 			}
 			else if(this.controller.getGame().hasOneSurvivant()) {
 				if(this.controller.getGame().getMode() == 1) {
-					info += "# Félicitations ! \n# L'agent bomberman " + this.controller.getGame().getSurvivant().getColor() + " a remporté la partie.\n";
+					info += "# Congratulation ! \n# Agent Bomberman " + this.controller.getGame().getSurvivant().getColor() + " won the game.\n";
 				} else {
-					info += "# Félicitations ! \n# Vos agents bomberman ont remporté la partie.\n";			
+					info += "# Congratulation ! \n# Your bomberman agents won the game.\n";			
 				}
 			} else {
 				if(this.controller.getGame().getMode() == 1 && !this.controller.getGame().hasSurvivantAgentPNJ()) {
-					info += "# Ouuppss ! \n# Il y a match null entre les agents bomberman.\n";
+					info += "# Ouuppss ! \n# There is a null match between the Bomberman agents.\n";
 				} else {
-					info += "# Ouuppss ! \n# Il y a match null entre les bomberman ainsi que les agents PNG.\n";
+					info += "# Ouuppss ! \n# There is a null match between the Bombermans as well as the PNG agents.\n";
 				}
 			}
 		}
@@ -142,7 +142,7 @@ public class ViewCommand implements Observer {
 	public void createFrame() {
 		/*---		JFRAME		---*/
 		jFrame = new JFrame();
-		jFrame.setTitle("Commande");
+		jFrame.setTitle("Command");
 		jFrame.setSize(new Dimension(800, 680));
 		Dimension windowSize = jFrame.getSize();
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -301,9 +301,9 @@ public class ViewCommand implements Observer {
 		String msg = "Turn : " + this.controller.getGame().getMaxturn();
 		String msg2 = "";
 		if(this.controller.getGame().getMode() == 1) {
-			msg2 = "Mode du jeu : NON COOPÉRATIF";
+			msg2 = "Game mode: NON COOPERATIVE";
 		} else {
-			msg2 = "Mode du jeu : COOPÉRATIF";			
+			msg2 = "Game mode: COOPERATIVE";			
 		}
 		jLabel = new JLabel(msg, JLabel.CENTER);
 		jLabel2 = new JLabel(msg2, JLabel.CENTER);
@@ -320,12 +320,12 @@ public class ViewCommand implements Observer {
 		String info = "";
 		info += "#################################\n"		;
 		info += "# \tBOMERMAN GAME \n"			;
-		info += "# Le nombre de tours maximum : " + this.controller.getGame().getMaxturn() + "\n";
-		info += "# Le nombre d'agent Bomberman : " + this.controller.getGame().nbAgentBombermanSurvivant() + "\n";
-		info += "# Le nombre d'agent PNJ : " +  this.controller.getGame().nbAgentPNGSurvivant() + "\n"		;
-		info += "# \t-----------INFOS-------------\n"		;
-		info += "# \tLE JEU PEUT COMMENCER : \n"			;
-		info += "# \t Bonne (^_^) chance \n"				;
+		info += "# The maximum number of turns : " + this.controller.getGame().getMaxturn() + "\n";
+		info += "# The number of Agent Bomberman : " + this.controller.getGame().nbAgentBombermanSurvivant() + "\n";
+		info += "# The number of PNG agents : " +  this.controller.getGame().nbAgentPNGSurvivant() + "\n"		;
+		info += "# \t-----------INFO-------------\n"		;
+		info += "# \tTHE GAME CAN BEGIN : \n"			;
+		info += "# \t Good (^_^) luck \n"				;
 		info += "#################################"			;
 		this.jTextArea.setText(info);
 	}
@@ -356,7 +356,7 @@ public class ViewCommand implements Observer {
 		jPanelGridOfScrollable.add(jPanelExit);
 
 		JPanel jPanelTheme = new JPanel(new GridLayout(2, 1));
-		JLabel textChangeInterface = new JLabel("Change thème of interface", JLabel.CENTER);
+		JLabel textChangeInterface = new JLabel("Change theme of interface", JLabel.CENTER);
 		textChangeInterface.setFont(new Font("Serif", Font.BOLD, 14));
 		
 		JPanel jPanelGroupBtn = new JPanel(new GridLayout(1, 1));
