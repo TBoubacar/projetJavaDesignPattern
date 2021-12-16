@@ -311,12 +311,13 @@ public class ViewCommand implements Observer {
 		jLabel.setFont(new Font("Serif", Font.BOLD, 14));
 		jLabel2.setFont(new Font("Serif", Font.BOLD, 14));
 		
-		jTextArea = new JTextArea(10, 40);
+		jTextArea = new JTextArea(11, 25);
 		jTextArea.setPreferredSize( new Dimension(12,30) );
 		jTextArea.setAlignmentX(Component.CENTER_ALIGNMENT);
 		jTextArea.setForeground(Color.WHITE);
 		jTextArea.setBackground(Color.BLACK);
-		
+		jTextArea.setFont(new Font("Serif", Font.BOLD, 13));		
+
 		String info = "";
 		info += "#################################\n"		;
 		info += "# \tBOMERMAN GAME \n"			;
