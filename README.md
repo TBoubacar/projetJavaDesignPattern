@@ -13,7 +13,7 @@ Procedure d'utilisation de ce projet :
     6.  Choisissez comment vous voulez importer le dossier (Choix possible : Directory... ou Archibe...)
     7.  Le dossier TOURE_Boubacar... contient le projet dans le cas où vous voudriez importer via : Directory... Dans le cas contraire, l'importation avec l'Archibe serait plus simple et l'IDE se chargera de dezipper le dossier pour vous.
     8.  Choisissez : ProjetJava-DesignPattern... Dans le cas ou vous avez choisis Directory... 
-    9.  Lancer l'exécution via l'onglet run en vert en choisissant le dossier pouvant être exécuter par eclipse.
+    9.  Lancer l'exécution via l'onglet run en vert en choisissant le dossier pouvant être exécuter par eclipse. En général au niveau de la colonne Import as, il est marqué "Eclipse project" quand il est exécutable par eclipse
     10. Faire le test.
 
 #Les commandes git indispensable :
